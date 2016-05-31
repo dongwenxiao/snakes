@@ -10,27 +10,29 @@ import React from 'react';
 import * as GAME_CONFIG from '../constants/game'
 
 
-class JointsComponent extends React.Component {
+class Joints extends React.Component {
   render() {
 
     var jointsStyles = {
       width: GAME_CONFIG.JOINTS_WIDTH,
       height: GAME_CONFIG.JOINTS_HEIGHT,
-      left: this.props.left,
-      top: this.props.top
+      left: this.props.left + "px",
+      top: this.props.top + "px"
     }
     return (
       <div className="joints" style={jointsStyles}>
       </div>
-
     );
   }
 }
 
+/*Joints.propTypes = {
+  left: PropTypes.int,
+  top: PropTypes.int
+};*/
 
 
-
-JointsComponent.defaultProps = {
+Joints.defaultProps = {
 };
 
-export default JointsComponent;
+export default Joints;

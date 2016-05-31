@@ -1,0 +1,28 @@
+/* Base Application Styles */
+
+body {
+    color: #fff;
+    background: #222;
+}
+
+.scene{
+    position: relative;
+}
+
+.bg-layer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.play-layer{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+}
