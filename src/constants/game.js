@@ -8,3 +8,6 @@ export const MAP_HEIGHT = 600;
 
 // logic
 export const CPS = 20; // 检测频率  20次/秒
+
+// snake
+export const SNAKE_SPEED = 3; // 2格/秒

@@ -35,7 +35,7 @@ class Snake extends Component {
   }
 
   // 设置蛇不停的移动
-  foreveryMove(actions, snakeData){    
+  foreveryMove(actions, snakeData){
     setInterval(function(){
       actions.move();
     }, 1000 / snakeData.speed)

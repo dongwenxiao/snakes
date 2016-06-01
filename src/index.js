@@ -2,8 +2,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import configureStore from './stores';
-import Scene from './components/Scene';
-import gameManager from './gameManager';
+import Scene from './containers/Scene';
 
 const store = configureStore();
 
@@ -14,7 +13,13 @@ render(
   document.getElementById('app')
 );
 
-gameManager.gameStart();
+
+
+
+
+
+
+
 // gameManager.addLoopListener(function(){
 // 	console.log('listener 1')
 // })

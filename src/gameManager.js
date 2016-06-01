@@ -24,8 +24,20 @@ var gameManager = {
 	addLoopListener: function(listener){
 		this.loopListeners.push(listener)
 	},
-	gameStart: function(){
+	start: function(){
 		gameLoop();
+	},
+	pause: function(){
+
+	},
+
+	// 检测蛇吃豆
+	snakeEatFoodCheck: function(snakeHead, foods, handle){
+		// debugger;
+		foods.forEach(function(food){
+			if(snakeHead.left == food.left && snakeHead.top == food.top)
+				handle(food)
+		})
 	}
 }
 

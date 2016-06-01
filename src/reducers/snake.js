@@ -13,7 +13,7 @@ var defaultState = (function() {
 		direction: DIRECTION.LEFT
 	}
 
-	var speed = 2; // 每秒走几个格子
+	var speed = GAME_CONFIG.SNAKE_SPEED; // 每秒走几个格子
 
 	var jointses = []
 

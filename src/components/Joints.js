@@ -3,11 +3,9 @@
  * 地图表示游戏场景
  */
 
+require('styles/Joints.css')
 
-require('styles/Joints.css');
-
-import React from 'react';
-import * as GAME_CONFIG from '../constants/game'
+import React from 'react'
 
 
 class Joints extends React.Component {
@@ -29,12 +27,6 @@ class Joints extends React.Component {
     );
   }
 }
-
-/*Joints.propTypes = {
-  left: PropTypes.int,
-  top: PropTypes.int
-};*/
-
 
 Joints.defaultProps = {
 };

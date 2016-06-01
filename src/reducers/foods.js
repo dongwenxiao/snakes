@@ -4,8 +4,8 @@ import * as GAME_CONFIG from '../constants/game'
 var defaultState = (function() {
 
     var foods = [{
-        left: 300,
-        top: 300,
+        left: 90,
+        top: 100,
         width: GAME_CONFIG.TILE_WIDTH,
         height: GAME_CONFIG.TILE_HEIGHT,
         color: 'green'

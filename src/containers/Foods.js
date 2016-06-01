@@ -5,8 +5,6 @@ import React, {
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import Joints from '../components/Joints'
-
 import * as foodActionCreator from '../actions/food'
 
 require('styles/food.css');
