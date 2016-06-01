@@ -1,0 +1,12 @@
+.food{
+	position: absolute;
+	left: 0;
+	top: 0;
+	background: red;
+	/*border-left: 1px solid #000;*/
+	box-sizing: border-box;
+}
+.food.red{}
+.food.green{}
+.food.blue{}
+.food.pink{}

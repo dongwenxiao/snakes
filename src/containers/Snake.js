@@ -1,4 +1,3 @@
-
 import React, {
   Component,
   PropTypes
@@ -6,24 +5,21 @@ import React, {
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-
 import Joints from '../components/Joints'
-import * as GAME_CONFIG from '../constants/game'
 
 import * as snakeActionCreator from '../actions/snake'
 
-/* Populated by react-webpack-redux:reducer */
+
 class Snake extends Component {
   render() {
     const {snakeData, actions} = this.props;
-
-    // console.log(this.props)
-
+    
     var Jointses = [];
 
     snakeData.jointses.forEach(function(joints, index){
-      // console.log("joints-"+index + "   ："+ joints.left)
-      Jointses.push(<Joints key={"joints-"+index} left={joints.left} top={joints.top}></Joints>)
+      // console.log(joints)
+      var isHead = (index == 0) ? true : false;
+      Jointses.push(<Joints key={"joints-" + index} data={joints} isHead={isHead}></Joints>)
     });    
 
     return (
@@ -33,18 +29,33 @@ class Snake extends Component {
 
   componentDidMount(){
     const {snakeData, actions} = this.props;
+    
+    this.bindKeyControl(actions)
+    // this.foreveryMove(actions, snakeData)
+  }
+
+  // 设置蛇不停的移动
+  foreveryMove(actions, snakeData){    
     setInterval(function(){
       actions.move();
-    }, 1000)
+    }, 1000 / snakeData.speed)
+  }
 
-    setTimeout(function(){
-      actions.turnLeft();
-    },2000)
-    
-    
-    setTimeout(function(){
-      actions.turnRight();
-    },3000)
+  // 绑定键盘控制事件
+  bindKeyControl(actions){
+    window.addEventListener('keypress', function(e){
+      // up  119
+      // down 115
+      // left 97
+      // right 100
+      if(e.keyCode == 97){
+        actions.turnLeft();
+      }
+
+      if(e.keyCode == 100){
+        actions.turnRight();
+      }
+    });
   }
 }
 

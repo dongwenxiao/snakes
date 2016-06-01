@@ -13,15 +13,19 @@ import * as GAME_CONFIG from '../constants/game'
 class Joints extends React.Component {
   render() {
 
+    var joints = this.props.data;
+
     var jointsStyles = {
-      width: GAME_CONFIG.JOINTS_WIDTH,
-      height: GAME_CONFIG.JOINTS_HEIGHT,
-      left: this.props.left + "px",
-      top: this.props.top + "px"
+      width: joints.width + "px",
+      height: joints.height + "px",
+      left: joints.left + "px",
+      top: joints.top + "px"
     }
+    
+    var directonClass = this.props.isHead ? joints.direction.toLowerCase() : '';
+
     return (
-      <div className="joints" style={jointsStyles}>
-      </div>
+      <div className={'joints ' + directonClass} style={jointsStyles} />
     );
   }
 }
