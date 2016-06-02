@@ -20,10 +20,11 @@ class Joints extends React.Component {
       top: joints.top + "px"
     }
     
-    var directonClass = joints.isHead ? joints.direction.toLowerCase() : '';
-
+    // var directonClass = joints.isHead ? joints.direction.toLowerCase() : ''
+    var headClass = joints.isHead ? ' head ' : ''
+    var colorClass = joints.color.toLowerCase()
     return (
-      <div className={'joints ' + directonClass} style={jointsStyles} />
+      <div className={colorClass + ' joints ' + headClass} style={jointsStyles} />
     );
   }
 }

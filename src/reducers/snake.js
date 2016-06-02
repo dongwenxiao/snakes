@@ -3,19 +3,20 @@ import * as DIRECTION from '../constants/direction'
 import * as GAME_CONFIG from '../constants/game'
 
 class Joints {
-    constructor(left, top, width, height, direction, isHead = false){
+    constructor(left, top, width, height, direction, color = 'red', isHead = false){
         this.left = left
         this.top = top
         this.width = width
         this.height = height
         this.direction = direction
+        this.color = color
         this.isHead = isHead
     }
 }
 
 var defaultState = (function() {
 
-    var head = new Joints(100, 100, GAME_CONFIG.JOINTS_WIDTH, GAME_CONFIG.JOINTS_HEIGHT, DIRECTION.LEFT, true)
+    var head = new Joints(100, 100, GAME_CONFIG.JOINTS_WIDTH, GAME_CONFIG.JOINTS_HEIGHT, DIRECTION.LEFT, GAME_CONFIG.FOOD_COLORS[0], true)
 	var speed = GAME_CONFIG.SNAKE_SPEED // 每秒走几个格子
     var count = GAME_CONFIG.DEFAULT_JOINTS_COUNT
 	var jointses = []
@@ -33,6 +34,7 @@ var defaultState = (function() {
 		jointses.push(joints)
 	}
 
+    console.log(jointses)
     return {
         jointses: jointses, // 每个关节的数据
         speed: speed
@@ -102,13 +104,13 @@ export default function snakeReducer(state = defaultState, action) {
             if(head.top < 0){
                 head.top += GAME_CONFIG.MAP_HEIGHT    
             }
-            if(head.top > GAME_CONFIG.MAP_HEIGHT){
+            if(head.top >= GAME_CONFIG.MAP_HEIGHT){
                 head.top -= GAME_CONFIG.MAP_HEIGHT
             }
             if(head.left <0){
                 head.left += GAME_CONFIG.MAP_WIDTH    
             }
-            if(head.left > GAME_CONFIG.MAP_WIDTH){
+            if(head.left >= GAME_CONFIG.MAP_WIDTH){
                 head.left -= GAME_CONFIG.MAP_WIDTH
             }           
             
@@ -138,7 +140,10 @@ export default function snakeReducer(state = defaultState, action) {
 
             const food = action.data.food
             const lastSnakeLastJointsPos = action.data.lastSnakeLastJointsPos
-            newState.jointses.push(new Joints(lastSnakeLastJointsPos.left, lastSnakeLastJointsPos.top, GAME_CONFIG.JOINTS_WIDTH, GAME_CONFIG.JOINTS_HEIGHT, DIRECTION.LEFT, false))
+
+            const colors = GAME_CONFIG.FOOD_COLORS
+            const color = colors[Math.floor(Math.random() * colors.length)]
+            newState.jointses.push(new Joints(lastSnakeLastJointsPos.left, lastSnakeLastJointsPos.top, GAME_CONFIG.JOINTS_WIDTH, GAME_CONFIG.JOINTS_HEIGHT, DIRECTION.LEFT, color, false))
             
             return newState
 

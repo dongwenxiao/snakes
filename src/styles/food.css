@@ -6,7 +6,15 @@
 	/*border-left: 1px solid #000;*/
 	box-sizing: border-box;
 }
-.food.red{}
-.food.green{}
-.food.blue{}
-.food.pink{}
+.food.red{
+	background: red;
+}
+.food.green{
+	background: green;
+}
+.food.blue{
+	background: blue;
+}
+.food.pink{
+	background: pink;
+}

@@ -1,21 +1,46 @@
-.joints{
-	position: absolute;
-	left: 0;
-	top: 0;
-	background: red;
-	/*border-left: 1px solid #000;*/
-	box-sizing: border-box;
+.joints {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: red;
+    /*border-left: 1px solid #000;*/
+    box-sizing: border-box;
 }
-.joints.left{
-	border-left: 1px solid #000;
+.joints.head{
+	background: #000 !important;
 }
-.joints.top{
-	border-top: 1px solid #000;
+
+.joints.left {
+    border-left: 1px solid #000;
 }
-.joints.right{
-	border-right: 1px solid #000;
+
+.joints.top {
+    border-top: 1px solid #000;
 }
-.joints.bottom{
-	border-bottom: 1px solid #000;
+
+.joints.right {
+    border-right: 1px solid #000;
 }
+
+.joints.bottom {
+    border-bottom: 1px solid #000;
+}
+
+.joints.red {
+    background: red;
+}
+
+.joints.blue {
+    background: blue;
+}
+
+.joints.pink {
+    background: pink;
+}
+
+.joints.green {
+    background: green;
+}
+
+
 /*.joints {}*/
