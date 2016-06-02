@@ -141,9 +141,7 @@ export default function snakeReducer(state = defaultState, action) {
             const food = action.data.food
             const lastSnakeLastJointsPos = action.data.lastSnakeLastJointsPos
 
-            const colors = GAME_CONFIG.FOOD_COLORS
-            const color = colors[Math.floor(Math.random() * colors.length)]
-            newState.jointses.push(new Joints(lastSnakeLastJointsPos.left, lastSnakeLastJointsPos.top, GAME_CONFIG.JOINTS_WIDTH, GAME_CONFIG.JOINTS_HEIGHT, DIRECTION.LEFT, color, false))
+            newState.jointses.push(new Joints(lastSnakeLastJointsPos.left, lastSnakeLastJointsPos.top, GAME_CONFIG.JOINTS_WIDTH, GAME_CONFIG.JOINTS_HEIGHT, DIRECTION.LEFT, food.color, false))
             
             return newState
 
