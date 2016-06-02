@@ -21,7 +21,6 @@ class Snake extends Component {
     // 每次更新组件，检查是否有碰撞
     const {snakeData, foodsData, actions} = nextProps;
     gameManager.snakeEatFoodCheck(snakeData.jointses[0], foodsData.foods, function(food){
-      console.log('eat....')
 
       // 吃豆子
       actions.eatFood(food, {

@@ -98,6 +98,20 @@ export default function snakeReducer(state = defaultState, action) {
         		head.top += GAME_CONFIG.TILE_HEIGHT
         	}
 
+            // 保证永远不会移出地图            
+            if(head.top < 0){
+                head.top += GAME_CONFIG.MAP_HEIGHT    
+            }
+            if(head.top > GAME_CONFIG.MAP_HEIGHT){
+                head.top -= GAME_CONFIG.MAP_HEIGHT
+            }
+            if(head.left <0){
+                head.left += GAME_CONFIG.MAP_WIDTH    
+            }
+            if(head.left > GAME_CONFIG.MAP_WIDTH){
+                head.left -= GAME_CONFIG.MAP_WIDTH
+            }           
+            
 
 
         	var lastJoints = null
