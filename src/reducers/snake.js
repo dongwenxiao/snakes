@@ -2,28 +2,33 @@ import * as types from '../actions/const'
 import * as DIRECTION from '../constants/direction'
 import * as GAME_CONFIG from '../constants/game'
 
+class Joints {
+    constructor(left, top, width, height, direction, isHead = false){
+        this.left = left
+        this.top = top
+        this.width = width
+        this.height = height
+        this.direction = direction
+        this.isHead = isHead
+    }
+}
 
 var defaultState = (function() {
 
-	var head = {
-		left: 100,
-		top: 100,
-		width: GAME_CONFIG.JOINTS_WIDTH,
-		height: GAME_CONFIG.JOINTS_HEIGHT,
-		direction: DIRECTION.LEFT
-	}
-
-	var speed = GAME_CONFIG.SNAKE_SPEED; // 每秒走几个格子
-
+    var head = new Joints(100, 100, GAME_CONFIG.JOINTS_WIDTH, GAME_CONFIG.JOINTS_HEIGHT, DIRECTION.LEFT, true)
+	var speed = GAME_CONFIG.SNAKE_SPEED // 每秒走几个格子
+    var count = GAME_CONFIG.DEFAULT_JOINTS_COUNT
 	var jointses = []
 
-	for(var i=0; i<3; i++){
+	for(var i=0; i<count; i++){
 
 		var joints = Object.assign({}, head, {
 			left: head.left + (GAME_CONFIG.TILE_WIDTH * i),
 			top: head.top,
 			direction: DIRECTION.LEFT
 		});
+
+        if(i>0) joints.isHead = false
 		
 		jointses.push(joints)
 	}
@@ -31,7 +36,6 @@ var defaultState = (function() {
     return {
         jointses: jointses, // 每个关节的数据
         speed: speed
-        // direction: DIRECTION.LEFT // 当前移动的方向 - 即，头关节的方向
     }
 })()
 
@@ -115,8 +119,14 @@ export default function snakeReducer(state = defaultState, action) {
 
             return newState
 
-        case types.ADD_JOINTS:
-            return state
+        case types.EAT_FOOD:
+            const newState = Object.assign({}, state) // 新完整蛇数据
+
+            const food = action.data.food
+            const lastSnakeLastJointsPos = action.data.lastSnakeLastJointsPos
+            newState.jointses.push(new Joints(lastSnakeLastJointsPos.left, lastSnakeLastJointsPos.top, GAME_CONFIG.JOINTS_WIDTH, GAME_CONFIG.JOINTS_HEIGHT, DIRECTION.LEFT, false))
+            
+            return newState
 
         default:
             return state

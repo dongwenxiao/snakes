@@ -30,6 +30,16 @@ export default function snakeReducer(state = defaultState, action) {
             return newState
         case types.REMOVE_FOOD:
             var newState = Object.assign({}, state) // 新完整蛇数据    
+            
+            var needRemoveFood = action.data.food
+            var newFoods = []
+            newState.foods.forEach(function(food){
+                if(!(needRemoveFood.left == food.left && needRemoveFood.top == food.top))
+                    newFoods.push(food)
+            })
+
+            newState.foods = newFoods;
+
             return newState
         default:
             return state

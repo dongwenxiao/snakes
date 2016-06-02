@@ -7,9 +7,10 @@ export function add(){
 	}
 }
 
-export function remove(){
+export function remove(food){
 	return {
-		type: types.REMOVE_FOOD
+		type: types.REMOVE_FOOD,
+		data: {food}
 	}
 }
 

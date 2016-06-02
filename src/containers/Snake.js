@@ -8,18 +8,44 @@ import { connect } from 'react-redux';
 import Joints from '../components/Joints'
 
 import * as snakeActionCreator from '../actions/snake'
+import * as foodActionCreator from '../actions/food'
+import gameManager from '../gameManager';
 
+var lastSnakeLastJointsLeft = 0 
+var lastSnakeLastJointsTop = 0
 
 class Snake extends Component {
+
+  componentWillUpdate(nextProps, nextState) {
+
+    // 每次更新组件，检查是否有碰撞
+    const {snakeData, foodsData, actions} = nextProps;
+    gameManager.snakeEatFoodCheck(snakeData.jointses[0], foodsData.foods, function(food){
+      console.log('eat....')
+
+      // 吃豆子
+      actions.eatFood(food, {
+        left: lastSnakeLastJointsLeft,
+        top: lastSnakeLastJointsTop
+      });
+
+      // 删除豆子
+      actions.remove(food);
+    })
+  }
+
   render() {
     const {snakeData, actions} = this.props;
-    
+
+    // 每次都记录一下，用于下次知道最后一个位置，去添加新吃的豆
+    var lastSnakeLastJoints = snakeData.jointses[snakeData.jointses.length -1];
+    lastSnakeLastJointsLeft = lastSnakeLastJoints.left
+    lastSnakeLastJointsTop = lastSnakeLastJoints.top
+
     var Jointses = [];
 
     snakeData.jointses.forEach(function(joints, index){
-      // console.log(joints)
-      var isHead = (index == 0) ? true : false;
-      Jointses.push(<Joints key={"joints-" + index} data={joints} isHead={isHead}></Joints>)
+      Jointses.push(<Joints key={"joints-" + index} data={joints}></Joints>)
     });    
 
     return (
@@ -31,8 +57,10 @@ class Snake extends Component {
     const {snakeData, actions} = this.props;
     
     this.bindKeyControl(actions)
-    // this.foreveryMove(actions, snakeData)
+    this.foreveryMove(actions, snakeData)
   }
+
+
 
   // 设置蛇不停的移动
   foreveryMove(actions, snakeData){
@@ -55,6 +83,10 @@ class Snake extends Component {
       if(e.keyCode == 100){
         actions.turnRight();
       }
+
+      if(e.keyCode == 119){
+        actions.move();
+      }
     });
   }
 }
@@ -64,21 +96,18 @@ Snake.propTypes = {
   actions: PropTypes.object.isRequired
 };
 
-// Snake.defaultProps = {
-//   jointsCount: 3 // 默认蛇有3节
-// };
-
-
 function mapStateToProps(state) {
-  /* Populated by react-webpack-redux:reducer */
+
   const props = {
-    snakeData: state.snake
+    snakeData: state.snake,
+    foodsData: state.foods
   };
   return props;
 }
 function mapDispatchToProps(dispatch) {
-  /* Populated by react-webpack-redux:action */
-  const actions = snakeActionCreator;
+
+  // const actions = snakeActionCreator;
+  const actions = Object.assign({},foodActionCreator, snakeActionCreator);
   const actionMap = { actions: bindActionCreators(actions, dispatch) };
   return actionMap;
 }

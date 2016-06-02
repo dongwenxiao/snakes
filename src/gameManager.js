@@ -36,7 +36,7 @@ var gameManager = {
 		// debugger;
 		foods.forEach(function(food){
 			if(snakeHead.left == food.left && snakeHead.top == food.top)
-				handle(food)
+				handle(food, snakeHead, foods)
 		})
 	}
 }

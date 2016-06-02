@@ -19,3 +19,12 @@ export function turnRight(){
 	}
 }
 
+export function eatFood(food, lastSnakeLastJointsPos){
+	return {
+		type: types.EAT_FOOD,
+		data: {
+			food,
+			lastSnakeLastJointsPos
+		}
+	}
+}

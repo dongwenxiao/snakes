@@ -1,7 +1,7 @@
 /* Populated by react-webpack-redux:action */
 
 // snake
-export const ADD_JOINTS = 'ADD_JOINTS'
+export const EAT_FOOD = 'EAT_FOOD'
 export const MOVE = 'MOVE'
 export const TURN_LEFT = 'TURN_LEFT'
 export const TURN_RIGHT = 'TURN_RIGHT'

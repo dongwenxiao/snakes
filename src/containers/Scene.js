@@ -13,7 +13,7 @@ import * as snakeActionCreator from '../actions/snake'
 
 import * as GAME_CONFIG from '../constants/game'
 
-import gameManager from '../gameManager';
+// import gameManager from '../gameManager';
 
 
 require('normalize.css/normalize.css');
@@ -22,17 +22,17 @@ require('styles/Scene.css');
 class Scene extends Component {
   render() {
 
-    var sceneStyles ={
+    var sceneStyles = {
   		width: GAME_CONFIG.MAP_WIDTH,
   		height: GAME_CONFIG.MAP_HEIGHT
   	}
 
     // 每次更新组件，检查是否有碰撞
-    const {gameState, actions} = this.props;
+    /*const {gameState, actions} = this.props;
     gameManager.snakeEatFoodCheck(gameState.snake.jointses[0], gameState.foods.foods, function(food){
       console.log('eat---------------------')
       console.log(food)
-    })
+    })*/
 
 
     return (
@@ -81,7 +81,7 @@ function mapStateToProps(state) {
 
   return props;
 }
-function mapDispatchToProps(dispatch) {  
+function mapDispatchToProps(dispatch) {
   // const actions  = Object.assign(foodActionCreator, snakeActionCreator)
 
   // Secne 做为场景组件，需要控制其下面的全部子子组件，所以合并了actionCreator
@@ -104,4 +104,5 @@ function mapDispatchToProps(dispatch) {
  
   return { actions: bindActionCreators(actions, dispatch) };
 }
-export default connect(mapStateToProps, mapDispatchToProps)(Scene);
+export default Scene;
+// export default connect(mapStateToProps, mapDispatchToProps)(Scene);
