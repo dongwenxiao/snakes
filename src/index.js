@@ -12,18 +12,3 @@ render(
   </Provider>,
   document.getElementById('app')
 );
-
-
-
-
-
-
-
-
-// gameManager.addLoopListener(function(){
-// 	console.log('listener 1')
-// })
-
-// gameManager.addLoopListener(function(){
-// 	console.log('listener 2')
-// })

@@ -41,7 +41,7 @@ class Snake extends Component {
     lastSnakeLastJointsLeft = lastSnakeLastJoints.left
     lastSnakeLastJointsTop = lastSnakeLastJoints.top
 
-    var Jointses = [];
+    /*var Jointses = [];
 
     snakeData.jointses.forEach(function(joints, index){
       Jointses.push(<Joints key={"joints-" + index} data={joints}></Joints>)
@@ -49,6 +49,16 @@ class Snake extends Component {
 
     return (
       <div>{Jointses}</div>
+    )*/
+
+    return (
+        <div>
+          {
+            snakeData.jointses.map(function(joints, index){
+              return (<Joints key={"joints-" + index} data={joints}></Joints>)
+            })
+          }
+        </div>
     )
   }
 

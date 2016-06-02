@@ -16,7 +16,12 @@ class Joints {
 
 var defaultState = (function() {
 
-    var head = new Joints(100, 100, GAME_CONFIG.JOINTS_WIDTH, GAME_CONFIG.JOINTS_HEIGHT, DIRECTION.LEFT, GAME_CONFIG.FOOD_COLORS[0], true)
+    
+    var randomLeft = Math.floor(Math.random() * (GAME_CONFIG.MAP_WIDTH / GAME_CONFIG.TILE_WIDTH)) * GAME_CONFIG.TILE_WIDTH
+    var randomTop = Math.floor(Math.random() * (GAME_CONFIG.MAP_HEIGHT / GAME_CONFIG.TILE_HEIGHT)) * GAME_CONFIG.TILE_HEIGHT
+
+    var head = new Joints(randomLeft, randomTop, GAME_CONFIG.JOINTS_WIDTH, GAME_CONFIG.JOINTS_HEIGHT, DIRECTION.LEFT, GAME_CONFIG.FOOD_COLORS[0], true)
+    // var head = new Joints(100, 100, GAME_CONFIG.JOINTS_WIDTH, GAME_CONFIG.JOINTS_HEIGHT, DIRECTION.LEFT, GAME_CONFIG.FOOD_COLORS[0], true)
 	var speed = GAME_CONFIG.SNAKE_SPEED // 每秒走几个格子
     var count = GAME_CONFIG.DEFAULT_JOINTS_COUNT
 	var jointses = []
@@ -34,7 +39,6 @@ var defaultState = (function() {
 		jointses.push(joints)
 	}
 
-    console.log(jointses)
     return {
         jointses: jointses, // 每个关节的数据
         speed: speed
