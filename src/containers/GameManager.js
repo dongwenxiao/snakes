@@ -8,6 +8,9 @@ import { connect } from 'react-redux';
 import * as foodActionCreator from '../actions/food'
 import * as snakeActionCreator from '../actions/snake'
 
+import gameLogic from '../game/logic'
+import gameServerLogic from '../game/serverLogic'
+
 class GameManager extends Component { 
 
   constructor(props) {
@@ -21,6 +24,9 @@ class GameManager extends Component {
     },2000)
 
     this.bindKeyControl(actions);
+
+
+    gameLogic.test()
   }
 
   render() {
