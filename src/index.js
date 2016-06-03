@@ -12,3 +12,14 @@ render(
   </Provider>,
   document.getElementById('app')
 );
+
+
+
+var io = require('socket.io-client')
+
+
+var socket = io('http://localhost:8080');
+socket.on('message', function (data) {
+  console.log(data);
+  socket.emit('my other event', { my: 'data' });
+});

@@ -9,22 +9,42 @@ var serverCache = {
 }
 
 function handler (req, res) {
-  // fs.readFile(__dirname + '/socket.html',
-  fs.readFile(__dirname + '/dist/index.html',
-  function (err, data) {
-    if (err) {
-      res.writeHead(500);
-      return res.end('Error loading index.html');
-    }
-
     res.writeHead(200);
-    res.end(data);
-  });
+    res.end('There \' nothing. ');
 }
 
+
+
+
+
+// id
+// socket.id
+
+// 连接数量
+// io.sockets.server.engine.clientsCount
+
+// 特定某个用户
+// io.sockets.sockets[socket.id].emit('message', 'find you send')
+
+// 当前请求用户
+// socket.emit('message', "this is a emit");
+
+// 除了当前用户的所有用户
+// socket.broadcast.emit('message', "this is a broadcast");
+
+// 全部用户
+// io.sockets.emit('message', "this is a emit all");
+
 io.on('connection', function (socket) {
-  socket.emit('news', { hello: 'world ' + serverCache.name});
+
+
   socket.on('my other event', function (data) {
     console.log(data);
   });
-});
+
+  socket.on('disconnect', function(msg){
+    console.log(msg + socket.id)
+  });
+
+
+})
