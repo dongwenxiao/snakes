@@ -65,8 +65,8 @@ class Snake extends Component {
   componentDidMount(){
     const {snakeData, actions} = this.props;
     
-    this.bindKeyControl(actions)
-    this.foreveryMove(actions, snakeData)
+    // this.bindKeyControl(actions)
+    // this.foreveryMove(actions, snakeData)
   }
 
 
