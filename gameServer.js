@@ -1,6 +1,14 @@
+require('babel-core/register');
+
 var app = require('http').createServer(handler)
 var io = require('socket.io')(app);
 var fs = require('fs');
+// var gameServerLogic = require('./src/game/serverLogic')
+
+
+
+
+
 
 app.listen(8080);
 
@@ -37,10 +45,12 @@ function handler (req, res) {
 
 io.on('connection', function (socket) {
 
+	var gameServerLogic = require('./src/game/serverLogic')(io, socket)
+	gameServerLogic.init()
 
-  socket.on('my other event', function (data) {
-    console.log(data);
-  });
+  // socket.on('my other event', function (data) {
+  //   console.log(data);
+  // });
 
   socket.on('disconnect', function(msg){
     console.log(msg + socket.id)

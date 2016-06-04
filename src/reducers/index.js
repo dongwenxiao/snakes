@@ -9,7 +9,8 @@
 import { combineReducers } from 'redux';
 
 import snake from './snake'
+import snakes from './snakes'
 import foods from './foods'
 /* Populated by react-webpack-redux:reducer */
-const reducers = {snake, foods};
+const reducers = {snake, foods, snakes};
 module.exports = combineReducers(reducers);

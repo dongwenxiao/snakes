@@ -7,8 +7,9 @@ import { connect } from 'react-redux';
 
 import * as foodActionCreator from '../actions/food'
 import * as snakeActionCreator from '../actions/snake'
+import * as snakesActionCreator from '../actions/snakes'
 
-import gameLogic from '../game/logic'
+import gameClinetLogic from '../game/clinetLogic'
 import gameServerLogic from '../game/serverLogic'
 
 class GameManager extends Component { 
@@ -16,17 +17,21 @@ class GameManager extends Component {
   constructor(props) {
     super(props);
 
-    console.log(this.props)
+    // console.log(this.props)
     const { actions } = this.props
 
-    setTimeout(function(){
+    /*setTimeout(function(){
       actions.move()
-    },2000)
+    },2000)*/
 
-    this.bindKeyControl(actions);
+    /////////////////////////////////////////////////////////////////// 已从server获得snakes的状态，下面根据状态绘制
 
 
-    gameLogic.test()
+    // this.bindKeyControl(actions);
+
+    gameClinetLogic.init(actions)
+
+    // gameLogic.test()
   }
 
   render() {
@@ -34,7 +39,7 @@ class GameManager extends Component {
       <div className="gameManager" />
     )
   }
-
+/*
   // 绑定键盘控制事件
   bindKeyControl(actions){
     window.addEventListener('keypress', function(e){
@@ -55,7 +60,7 @@ class GameManager extends Component {
       }
     });
   }
-
+*/
 
 
 }
@@ -68,7 +73,7 @@ function mapStateToProps(state) {
   return props;
 }
 function mapDispatchToProps(dispatch) {  
-  const actions = snakeActionCreator;
+  const actions = snakesActionCreator;
   const actionMap = { actions: bindActionCreators(actions, dispatch) };
   return actionMap;
 }

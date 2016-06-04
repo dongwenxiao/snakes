@@ -34,6 +34,7 @@ class Snake extends Component {
   }
 
   render() {
+    console.log(this.props)
     const {snakeData, actions} = this.props;
 
     // 每次都记录一下，用于下次知道最后一个位置，去添加新吃的豆
