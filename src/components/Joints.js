@@ -6,28 +6,43 @@
 require('styles/Joints.css')
 
 import React from 'react'
-
+import * as GAME_CONFIG from '../constants/game'
 
 class Joints extends React.Component {
   render() {
 
-    var joints = this.props.data
-    var zIndex = this.props.zIndex
-    
-    var jointsStyles = {
+    const joints = this.props.data
+    const zIndex = this.props.zIndex
+    const name = this.props.name
+    // const direction = joints.direction.toLowerCase()
+
+    const jointsStyles = {
       width: joints.width + "px",
       height: joints.height + "px",
       left: joints.left + "px",
       top: joints.top + "px",
       zIndex: zIndex
     }
+
+    const nameStyle = {
+      top: - (GAME_CONFIG.JOINTS_HEIGHT / 3 * 4),
+      left: GAME_CONFIG.JOINTS_WIDTH,
+      fontSize: GAME_CONFIG.JOINTS_HEIGHT - 2 + "px",
+      lineHight: GAME_CONFIG.JOINTS_HEIGHT + "px"
+    }
     
-    // var directonClass = joints.isHead ? joints.direction.toLowerCase() : ''
-    var headClass = joints.isHead ? ' head ' : ''
-    var colorClass = joints.color.toLowerCase()
+    const headClass = joints.isHead ? 'head' : ''
+    const directonClass = joints.isHead ? joints.direction.toLowerCase() : ''
+    const colorClass = joints.color.toLowerCase()
+
+    
+
+    const classes = `joints ${headClass} ${colorClass} ${directonClass}`
     return (
-      <div className={colorClass + ' joints ' + headClass} style={jointsStyles} />
-    );
+      <div className={classes} style={jointsStyles} >
+        {joints.isHead ? <span className="name" style={nameStyle} >{name}</span> : ''}
+      </div>
+    )
   }
 }
 

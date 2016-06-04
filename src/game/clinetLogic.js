@@ -18,12 +18,31 @@ socket.on(actions.MSG_DEAD, function(data){
 })
 */
 const gameLogic = {
+
+	data: {
+		socketId: '',
+		user: {}
+	},
+
 	test(){
 		socket.send('my other event', 'test hello 1')
 	},
 
 	init(actions){		
 		this.syncSankesState(actions.syncSnakes)
+
+		var username = this.setUserName()
+
+		this.join(username)
+	},
+
+	setUserName(){
+		// return 'victor'
+		return prompt('填上你的昵称~')
+	},
+
+	join(name){
+		socket.send(actions.ACTION_JOIN, { name })
 	},
 
 	// 全部snake的状态，用于绘制所有的蛇

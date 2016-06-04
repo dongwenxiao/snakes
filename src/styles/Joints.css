@@ -6,12 +6,28 @@
     /*border-left: 1px solid #000;*/
     box-sizing: border-box;
 }
+
+.joints .name{
+    position: absolute;
+    left: 0;
+    top: -20px;
+    white-space: nowrap;
+    background: rgba(68, 68, 68, 0.22);
+    color: #000;
+    /* position: absolute;
+    left: 0;
+    top: -2px;
+    white-space: nowrap; */
+}
 .joints.head{
-	background: #000 !important;
+	/*background: #000 !important;*/
 }
 
+
 .joints.left {
-    border-left: 1px solid #000;
+    border-left: 2px solid #000;
+    border-top: 2px solid #000;
+    border-bottom: 2px solid #000;
 }
 
 .joints.top {

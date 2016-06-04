@@ -15,18 +15,21 @@ class Snakes extends Component {
     const {snakesData, actions} = this.props;
     const snakes = snakesData.snakes
 
+    console.log(snakes)
+
     // 遍历蛇
     snakes.forEach(function(snake, snakeIndex){
       // 遍历关节
       snake.jointses.forEach(function(joints, jointsIndex){
-        allSnakeJiontses.push(<Joints key={"joints-" + jointsIndex} data={joints} zIndex={snake.jointses.length - jointsIndex}/>)
+        const key = `joints-${snakeIndex}-${jointsIndex}`
+        allSnakeJiontses.push(
+          <Joints name={snake.name} key={key} data={joints} zIndex={snake.jointses.length - jointsIndex}/>
+        )
       })
     })
 
-    console.log('render snake data')
-    console.log(snakesData)
-
-    /////////////////////////////////////////////////////////////////给服务端一个默认的蛇数据，用于测试渲染
+    // console.log('render snake data')
+    // console.log(snakesData)
 
     return (
       <div>

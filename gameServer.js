@@ -8,6 +8,7 @@ var fs = require('fs');
 
 
 
+// require('./test')
 
 
 app.listen(8080);
@@ -43,10 +44,11 @@ function handler (req, res) {
 // 全部用户
 // io.sockets.emit('message', "this is a emit all");
 
+var gameServerLogic = require('./src/game/serverLogic')(io)
+
 io.on('connection', function (socket) {
 
-	var gameServerLogic = require('./src/game/serverLogic')(io, socket)
-	gameServerLogic.init()
+	gameServerLogic.init(socket)
 
   // socket.on('my other event', function (data) {
   //   console.log(data);

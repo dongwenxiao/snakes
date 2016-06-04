@@ -30,7 +30,7 @@ class MapComponent extends React.Component {
   		// width: GAME_CONFIG.MAP_WIDTH,
   		// height: GAME_CONFIG.MAP_HEIGHT
   	}
-  	for(let i=0;i<(60*60); i++){
+  	for(let i=0;i<(GAME_CONFIG.TILE_COUNT_H * GAME_CONFIG.TILE_COUNT_V); i++){
   		tiles.push(<Tile key={"tile-"+i}/>);
   	}  	
 

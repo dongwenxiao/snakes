@@ -6,13 +6,21 @@
 import * as actions from '../constants/socket'
 import * as GAME_CONFIG from '../constants/game'
 import * as DIRECTION from '../constants/direction'
+import Snake from '../models/Snake'
+// var Snake = require('../models/Snake')
+
+// console.log('Snake111')
+// var sss = new Snake()
+// console.log(sss)
 
 var gameLoopSt = null;
 
-module.exports = function(io, socket) {
+
+module.exports = function(io) {
 
     var cacheGameData = {
-        snakes: [{
+        snakes: [
+        /*{
             id: '',
             name: '',
             speed: 0,
@@ -43,21 +51,22 @@ module.exports = function(io, socket) {
                 color: 'red',
                 head: false
             }]
-        }]
+        }*/
+        ]
     }
 
 
-    socket.on(actions.ACTION_JOIN, function(data) {})
-    socket.on(actions.ACTION_LEAVE, function(data) {})
-    socket.on(actions.ACTION_START, function(data) {})
-    socket.on(actions.ACTION_RESTART, function(data) {})
-    socket.on(actions.ACTION_MOVE, function(data) {})
-    socket.on(actions.ACTION_TURN_LEFT, function(data) {})
-    socket.on(actions.ACTION_TURN_RIGHT, function(data) {})
+    
+    // socket.on(actions.ACTION_LEAVE, function(data) {})
+    // socket.on(actions.ACTION_START, function(data) {})
+    // socket.on(actions.ACTION_RESTART, function(data) {})
+    // socket.on(actions.ACTION_MOVE, function(data) {})
+    // socket.on(actions.ACTION_TURN_LEFT, function(data) {})
+    // socket.on(actions.ACTION_TURN_RIGHT, function(data) {})
 
     const gameLogic = {
 
-        init() {
+        init(socket) {
             // socket.on(actions.ACTION_JOIN, function(data) {})
             // socket.on(actions.ACTION_LEAVE, function(data) {})
             // socket.on(actions.ACTION_START, function(data) {})
@@ -67,6 +76,8 @@ module.exports = function(io, socket) {
             // socket.on(actions.ACTION_TURN_RIGHT, function(data) {})
 
 
+            this.initJoin(socket)
+
             // init map data
 
             const colCount = GAME_CONFIG.MAP_WIDTH / GAME_CONFIG.TILE_WIDTH
@@ -74,6 +85,47 @@ module.exports = function(io, socket) {
 
 
             this.loopSnakeMove();
+        },
+
+        initJoin(socket){
+            socket.on(actions.ACTION_JOIN, function(data) {
+                var newUsername = data.name
+
+                // 随机生成  2/4 到 3/4 区间的值
+                function getRandom(max, unit){
+                    var part4 = Math.ceil((max / unit) / 4)
+                    return (Math.ceil(part4 * 2 * Math.random()) + part4) * unit
+                }
+
+                // 创建一个新蛇 并加入蛇群
+                // console.log(Snake)
+                // var test = new Snake()
+
+
+                // console.log('test')
+                // console.log(test)
+
+                var newSnake = new Snake(
+                    socket.id,
+                    newUsername,
+                    GAME_CONFIG.SNAKE_SPEED,
+                    0,
+                    0,
+                    getRandom(GAME_CONFIG.MAP_WIDTH, GAME_CONFIG.TILE_WIDTH),
+                    getRandom(GAME_CONFIG.MAP_HEIGHT, GAME_CONFIG.TILE_HEIGHT)
+                )
+
+                // var newSnake = new Snake(socket.id, newUsername)
+
+                // console.log(socket.id)
+                // console.log(newUsername)
+                // console.log('newSnake')
+                // console.log(newSnake)
+
+                console.log(newUsername + ' join')
+                cacheGameData.snakes.push(newSnake)
+
+            })
         },
 
         loopSnakeMove() {
