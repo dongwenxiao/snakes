@@ -6,7 +6,9 @@
 import * as actions from '../constants/socket'
 import * as GAME_CONFIG from '../constants/game'
 import * as DIRECTION from '../constants/direction'
-import Snake from '../models/Snake'
+import Snake from '../models/snake'
+import Food from '../models/food'
+import * as _ from 'underscore'
 // var Snake = require('../models/Snake')
 
 // console.log('Snake111')
@@ -15,12 +17,40 @@ import Snake from '../models/Snake'
 
 var gameLoopSt = null;
 
+var __cacheGameDataLast = {}
+var __cacheGameData = {
+    snakes: [],
+    foods: []
+}
+function setCacheData(key, val){
+    __cacheGameDataLast = Object.assign({}, __cacheGameData)
+    __cacheGameData[key] = val
+}
+function getCacheData(key){
+    return __cacheGameData[key]
+}
+function getLastCacheData(key){
+    return __cacheGameDataLast[key]
+}
+
+// 随机生成  2/4 到 3/4 区间的值
+function getRandom(max, unit){
+    var part4 = Math.ceil((max / unit) / 4)
+    return (Math.ceil(part4 * 2 * Math.random()) + part4) * unit
+}
 
 module.exports = function(io) {
 
-    var cacheGameData = {
+    /*var cacheGameData = {
+            foods: [{
+            left: 90,
+            top: 100,
+            width: GAME_CONFIG.TILE_WIDTH,
+            height: GAME_CONFIG.TILE_HEIGHT,
+            color: 'green'
+        }],
         snakes: [
-        /*{
+        {
             id: '',
             name: '',
             speed: 0,
@@ -51,9 +81,9 @@ module.exports = function(io) {
                 color: 'red',
                 head: false
             }]
-        }*/
+        }
         ]
-    }
+    }*/
 
 
     
@@ -67,44 +97,32 @@ module.exports = function(io) {
     const gameLogic = {
 
         init(socket) {
-            // socket.on(actions.ACTION_JOIN, function(data) {})
-            // socket.on(actions.ACTION_LEAVE, function(data) {})
-            // socket.on(actions.ACTION_START, function(data) {})
-            // socket.on(actions.ACTION_RESTART, function(data) {})
-            // socket.on(actions.ACTION_MOVE, function(data) {})
-            // socket.on(actions.ACTION_TURN_LEFT, function(data) {})
-            // socket.on(actions.ACTION_TURN_RIGHT, function(data) {})
 
+            // 初始化豆子数据
+            this.addFoods()
 
-            this.initJoin(socket)
+            // 所有蛇自动移动
+            this.autoLoopSnakeMove();
+
+            // 初始化事件
+            this.onJoin(socket)
+            this.onLeave(socket)
+            this.onMove(socket)
+            this.onTurnLeft(socket)
+            this.onTurnRight(socket)
 
             // init map data
 
-            const colCount = GAME_CONFIG.MAP_WIDTH / GAME_CONFIG.TILE_WIDTH
-            const rowCount = GAME_CONFIG.MAP_HEIGHT / GAME_CONFIG.TILE_HEIGHT
-
-
-            this.loopSnakeMove();
+            // const colCount = GAME_CONFIG.MAP_WIDTH / GAME_CONFIG.TILE_WIDTH
+            // const rowCount = GAME_CONFIG.MAP_HEIGHT / GAME_CONFIG.TILE_HEIGHT
         },
 
-        initJoin(socket){
+        onJoin(socket){
+            const me = this
             socket.on(actions.ACTION_JOIN, function(data) {
+
+                // 新蛇实例
                 var newUsername = data.name
-
-                // 随机生成  2/4 到 3/4 区间的值
-                function getRandom(max, unit){
-                    var part4 = Math.ceil((max / unit) / 4)
-                    return (Math.ceil(part4 * 2 * Math.random()) + part4) * unit
-                }
-
-                // 创建一个新蛇 并加入蛇群
-                // console.log(Snake)
-                // var test = new Snake()
-
-
-                // console.log('test')
-                // console.log(test)
-
                 var newSnake = new Snake(
                     socket.id,
                     newUsername,
@@ -115,119 +133,295 @@ module.exports = function(io) {
                     getRandom(GAME_CONFIG.MAP_HEIGHT, GAME_CONFIG.TILE_HEIGHT)
                 )
 
-                // var newSnake = new Snake(socket.id, newUsername)
+                console.log(`${newUsername}(${socket.id}) join `)
 
-                // console.log(socket.id)
-                // console.log(newUsername)
-                // console.log('newSnake')
-                // console.log(newSnake)
+                // 插入蛇群
+                var snakes = getCacheData('snakes')
+                snakes.push(newSnake)
+                setCacheData('snakes', snakes)
 
-                console.log(newUsername + ' join')
-                cacheGameData.snakes.push(newSnake)
+                // 发送豆子状态
+                me.sendToOne(socket.id, actions.MSG_FOODS_STATUS, getCacheData('foods'))
+
+                // 常规检查
+                me.gameDataCheck()
 
             })
         },
+        onLeave(socket){
+            const me = this
+            socket.on('disconnect', function(msg){
 
-        loopSnakeMove() {
+                var snake = _.find(getCacheData('snakes'), function(snake){
+                    return snake.id == socket.id
+                })
+
+                if(snake){
+
+                    setCacheData('snakes', _.without(getCacheData('snakes'), snake))
+
+                    console.log(`${snake.name}(${socket.id}) leave `)
+
+                    me.gameDataCheck()
+                }
+            });
+        },
+        onMove(socket, cb){
+            const me = this
+            socket.on(actions.ACTION_MOVE, function(data) {
+                console.log(`${socket.id} ACTION_MOVE`)
+
+                // 控制当前操作的蛇move
+                var snakes = getCacheData('snakes').map(function(snake){
+                    if(snake.id == socket.id){
+                        return me.snakeMove(snake)
+                    }
+                    return snake
+                })
+                setCacheData('snakes', snakes)
+
+                me.gameDataCheck()
+                cb && cb()
+            })
+        },
+        onTurnLeft(socket, cb){
+            const me = this
+            socket.on(actions.ACTION_TURN_LEFT, function(data) {
+                console.log(`${socket.id} ACTION_TURN_LEFT`)
+
+                // 控制当前操作的蛇 snakeTurnLeft
+                var snakes = getCacheData('snakes').map(function(snake){
+                    if(snake.id == socket.id){
+                        return me.snakeTurnLeft(snake)
+                    }
+                    return snake
+                })
+                setCacheData('snakes', snakes)
+
+                me.gameDataCheck()
+                cb && cb()
+            })
+        },
+        onTurnRight(socket, cb){
+            const me = this
+            socket.on(actions.ACTION_TURN_RIGHT, function(data) {
+                console.log(`${socket.id} ACTION_TURN_RIGHT`)
+
+                // 控制当前操作的蛇 snakeTurnRight
+                var snakes = getCacheData('snakes').map(function(snake){
+                    if(snake.id == socket.id){
+                        return me.snakeTurnRight(snake)
+                    }
+                    return snake
+                })
+                setCacheData('snakes', snakes)
+
+                cb && cb()
+                me.gameDataCheck()
+            })
+        },
+
+        snakeMove(snake){
+            var lastJoints = null
+            snake.jointses = snake.jointses.map(function(joints) {
+                if (!lastJoints) {
+                    // 头                    
+                    lastJoints = Object.assign({}, joints)
+
+                    // var head = snake.jointses[0]
+                    var head = joints
+
+                    // 向左移动
+                    if (head.direction == DIRECTION.LEFT) {
+                        head.left -= GAME_CONFIG.TILE_WIDTH
+                    }
+
+                    // 向右移动
+                    if (head.direction == DIRECTION.RIGHT) {
+                        head.left += GAME_CONFIG.TILE_WIDTH
+                    }
+
+                    // 向上移动
+                    if (head.direction == DIRECTION.TOP) {
+                        head.top -= GAME_CONFIG.TILE_HEIGHT
+                    }
+
+                    // 向下移动
+                    if (head.direction == DIRECTION.BOTTOM) {
+                        head.top += GAME_CONFIG.TILE_HEIGHT
+                    }
+
+                    // 保证永远不会移出地图            
+                    if (head.top < 0) {
+                        head.top += GAME_CONFIG.MAP_HEIGHT
+                    }
+                    if (head.top >= GAME_CONFIG.MAP_HEIGHT) {
+                        head.top -= GAME_CONFIG.MAP_HEIGHT
+                    }
+                    if (head.left < 0) {
+                        head.left += GAME_CONFIG.MAP_WIDTH
+                    }
+                    if (head.left >= GAME_CONFIG.MAP_WIDTH) {
+                        head.left -= GAME_CONFIG.MAP_WIDTH
+                    }
+
+                } else {
+                    // 其余节
+                    var tpmJoints = Object.assign({}, joints)
+                    joints.left = lastJoints.left
+                    joints.top = lastJoints.top
+                    joints.direction = lastJoints.direction
+                    lastJoints = tpmJoints
+                }
+                return joints
+            })
+
+            return snake
+        },
+
+        snakeTurnLeft(snake){
+
+            var head = snake.jointses[0]
+
+            if(head.direction == DIRECTION.TOP)
+                head.direction = DIRECTION.LEFT
+            else if(head.direction == DIRECTION.LEFT)
+                head.direction = DIRECTION.BOTTOM
+            else if(head.direction == DIRECTION.BOTTOM)
+                head.direction = DIRECTION.RIGHT
+            else if(head.direction == DIRECTION.RIGHT)
+                head.direction = DIRECTION.TOP   
+
+            snake.jointses[0] = head
+
+            return snake
+        },
+
+        snakeTurnRight(snake){
+            var head = snake.jointses[0]
+
+            if(head.direction == DIRECTION.TOP)
+                head.direction = DIRECTION.RIGHT
+            else if(head.direction == DIRECTION.RIGHT)
+                head.direction = DIRECTION.BOTTOM
+            else if(head.direction == DIRECTION.BOTTOM)
+                head.direction = DIRECTION.LEFT
+            else if(head.direction == DIRECTION.LEFT)
+                head.direction = DIRECTION.TOP
+
+            snake.jointses[0] = head
+            
+            return snake
+        },
+
+        snakeEatFood(snake, food){
+            const lastSnakes = getLastCacheData('snakes')
+            const lastSnake = _.find(lastSnakes, function(_snake){
+                return snake.id == _snake.id
+            })
+
+            const lastestJoints = lastSnake.jointses[lastSnake.jointses.length - 1]
+            const newJoints = Object.assign({}, lastestJoints, { color: food.color})
+            snake.jointses.push(newJoints)
+
+            return snake
+        },
+
+        removeFoods(foods){
+            const newFoods = _.difference(getCacheData('foods'), foods)
+            setCacheData('foods', newFoods)
+        },
+
+        addFoods(){
+            const foods = getCacheData('foods')
+            if(foods.length < GAME_CONFIG.MAX_FOOD_COUNT - 1){
+                
+                for(var i=0; i<GAME_CONFIG.RANDOM_ADD_COUNT; i++){
+                    const color = _.sample(GAME_CONFIG.FOOD_COLORS)
+                    const left = getRandom(GAME_CONFIG.MAP_WIDTH, GAME_CONFIG.TILE_WIDTH)
+                    const top = getRandom(GAME_CONFIG.MAP_HEIGHT, GAME_CONFIG.TILE_HEIGHT)
+
+                    var newFood = new Food(left, top, GAME_CONFIG.TILE_WIDTH, GAME_CONFIG.TILE_HEIGHT, color)                    
+                    foods.push(newFood)
+                }
+
+                setCacheData('foods', foods)
+            }
+        },
+
+        autoLoopSnakeMove() {
             var me = gameLogic
 
             // all snake 每秒移动1次
-
-            cacheGameData.snakes = cacheGameData.snakes.map(function(snake) {
-
-                
-
-                // 下一关关节 移动到 上一个关节位置
-                var lastJoints = null
-                snake.jointses = snake.jointses.map(function(joints) {
-                    if (!lastJoints) {
-                        // 头                    
-                        lastJoints = Object.assign({}, joints)
-
-                        // var head = snake.jointses[0]
-                        var head = joints
-
-                        // 向左移动
-                        if (head.direction == DIRECTION.LEFT) {
-                            head.left -= GAME_CONFIG.TILE_WIDTH
-                        }
-
-                        // 向右移动
-                        if (head.direction == DIRECTION.RIGHT) {
-                            head.left += GAME_CONFIG.TILE_WIDTH
-                        }
-
-                        // 向上移动
-                        if (head.direction == DIRECTION.TOP) {
-                            head.top -= GAME_CONFIG.TILE_HEIGHT
-                        }
-
-                        // 向下移动
-                        if (head.direction == DIRECTION.BOTTOM) {
-                            head.top += GAME_CONFIG.TILE_HEIGHT
-                        }
-
-                        // 保证永远不会移出地图            
-                        if (head.top < 0) {
-                            head.top += GAME_CONFIG.MAP_HEIGHT
-                        }
-                        if (head.top >= GAME_CONFIG.MAP_HEIGHT) {
-                            head.top -= GAME_CONFIG.MAP_HEIGHT
-                        }
-                        if (head.left < 0) {
-                            head.left += GAME_CONFIG.MAP_WIDTH
-                        }
-                        if (head.left >= GAME_CONFIG.MAP_WIDTH) {
-                            head.left -= GAME_CONFIG.MAP_WIDTH
-                        }
-
-                    } else {
-                        // 其余节
-                        var tpmJoints = Object.assign({}, joints)
-                        joints.left = lastJoints.left
-                        joints.top = lastJoints.top
-                        joints.direction = lastJoints.direction
-                        lastJoints = tpmJoints
-                    }
-                    return joints
-                })
-
-                return snake
+            var snakes = getCacheData('snakes').map(function(snake) {
+                return me.snakeMove(snake)
             })
+            setCacheData('snakes', snakes)
+            
+            me.gameDataCheck()
 
-            // 发新的状态
-            me.sendToAll(cacheGameData);
-
-            // for loop
+            // next loop
             gameLoopSt && clearTimeout(gameLoopSt)
-            gameLoopSt = setTimeout(me.loopSnakeMove, 1000)
+            gameLoopSt = setTimeout(me.autoLoopSnakeMove, 1000 / GAME_CONFIG.SNAKE_SPEED)
+        },
+
+        // 每次更新游戏数据后做一次检查并将最新状态发送给客户端
+        gameDataCheck() {
+
+            // 检查吃豆
+            this.checkEatFood()
+
+            // 检查死亡
+            this.checkKill()
+
+            // 发送最新的状态给客户端
+            this.sendToAll()
+        },
+
+        checkEatFood(){
+            const me = this
+
+            // 被吃的豆子s
+            var eatedFoods = []
+
+            getCacheData('snakes').forEach(function(snake){
+                const head = snake.jointses[0]
+                getCacheData('foods').forEach(function(food){
+                    if(head.left == food.left && head.top == food.top){
+
+                        // food be eat 
+                        eatedFoods.push(food)
+                        snake = me.snakeEatFood(snake, food)
+                    }
+                })
+            })
+            
+            if(eatedFoods.length > 0){
+                this.removeFoods(eatedFoods)
+                this.addFoods()
+                this.sendToAll(actions.MSG_FOODS_STATUS, getCacheData('foods'))
+            }
+        },
+
+        checkKill(){
+
         },
 
         sendToCurrent() {
 
         },
 
-        sendToAll(gameData) {
-            // console.log('MAS_ALL_STATUS:')
-            // console.log(cacheGameData)
-            
-            gameData = gameData ? gameData : cacheGameData
-            io.sockets.emit(actions.MAS_ALL_STATUS, gameData)
-
-            // var a = gameData.snakes[0].jointses[0].left
-            // var b = gameData.snakes[0].jointses[1].left
-            // var c = gameData.snakes[0].jointses[2].left
-            // console.log(` ${a}  ${b}  ${c}`)
+        sendToAll(type = actions.MSG_ALL_STATUS, data = getCacheData('snakes')) {
+            console.log(`sendToAll type:${type} data:`)
+            console.log(data)
+            io.sockets.emit(type, data)
         },
 
-        sendToOne() {
-
-        },
-
-
-
-
-
+        sendToOne(socketId, type, data) {
+            console.log(`sendToOne type:${type} data:`)
+            console.log(data)
+            io.sockets.sockets[socketId].emit(type, data)
+        }
 
     }
 

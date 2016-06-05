@@ -17,4 +17,5 @@ export const ACTION_TURN_RIGHT = 302
 export const MSG_BIRTH = 400
 export const MSG_DEAD = 401
 
-export const MAS_ALL_STATUS = 500
+export const MSG_ALL_STATUS = 500 // 全部蛇的状态
+export const MSG_FOODS_STATUS = 501 // 全部豆子的状态

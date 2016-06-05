@@ -14,6 +14,7 @@ var socket = io(SOCKET_SERVER_URL)
 
 export default {
 	send: function(type, data){
+		if(!data) data = ''
 		socket.emit(type, data)
 	},
 

@@ -9,8 +9,6 @@
 
 .joints .name{
     position: absolute;
-    left: 0;
-    top: -20px;
     white-space: nowrap;
     background: rgba(68, 68, 68, 0.22);
     color: #000;
@@ -31,15 +29,21 @@
 }
 
 .joints.top {
-    border-top: 1px solid #000;
+    border-left: 2px solid #000;
+    border-top: 2px solid #000;
+    border-right: 2px solid #000;
 }
 
 .joints.right {
-    border-right: 1px solid #000;
+    border-bottom: 2px solid #000;
+    border-top: 2px solid #000;
+    border-right: 2px solid #000;
 }
 
 .joints.bottom {
-    border-bottom: 1px solid #000;
+    border-left: 2px solid #000;
+    border-bottom: 2px solid #000;
+    border-right: 2px solid #000;
 }
 
 .joints.red {

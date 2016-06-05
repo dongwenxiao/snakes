@@ -12,10 +12,10 @@ class Snakes extends Component {
 
   render() {
     const allSnakeJiontses = []
-    const {snakesData, actions} = this.props;
-    const snakes = snakesData.snakes
+    const {snakes, actions} = this.props;
+    // const snakes = snakesData
 
-    console.log(snakes)
+    // console.log(snakes)
 
     // 遍历蛇
     snakes.forEach(function(snake, snakeIndex){
@@ -41,7 +41,7 @@ class Snakes extends Component {
 
 function mapStateToProps(state) {
   const props = {
-    snakesData: state.snakes
+    snakes: state.snakes
   }
 
   return props;

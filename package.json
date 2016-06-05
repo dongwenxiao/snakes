@@ -71,6 +71,7 @@
     "react-dom": "^15.0.0",
     "react-redux": "^4.4.5",
     "redux": "^3.5.2",
-    "socket.io": "^1.4.6"
+    "socket.io": "^1.4.6",
+    "underscore": "^1.8.3"
   }
 }

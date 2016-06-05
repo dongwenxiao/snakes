@@ -54,9 +54,9 @@ io.on('connection', function (socket) {
   //   console.log(data);
   // });
 
-  socket.on('disconnect', function(msg){
-    console.log(msg + socket.id)
-  });
+  // socket.on('disconnect', function(msg){
+  //   console.log(socket.id + ' leave')
+  // });
 
 
 })

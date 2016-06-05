@@ -1,36 +1,20 @@
 import * as types from '../actions/const'
 import * as DIRECTION from '../constants/direction'
 import * as GAME_CONFIG from '../constants/game'
-
 import Joints from '../models/Joints'
 
-// class Joints {
-//     constructor(left, top, width, height, direction, color = 'red', isHead = false){
-//         this.left = left
-//         this.top = top
-//         this.width = width
-//         this.height = height
-//         this.direction = direction
-//         this.color = color
-//         this.isHead = isHead
-//     }
-// }
-
-var defaultState = (function() {   
-    return {
-        snakes: []
-    }
-})()
+var defaultState = []
 
 export default function snakeReducer(state = defaultState, action) {
-
+    // console.log('action.type' + action.type)
     switch(action.type){
         case types.SYNC_SNAKES:
 
-            console.log('reducer data')
-            console.log(action.data)
+            // var snakes = action.data.snakes;
+            var snakes = action.data;
 
-            var snakes = action.data.snakes;
+            // console.log('SYNC_SNAKES')
+            // console.log(snakes)
 
             snakes = snakes.map(function(snake){
                 snake.jointses = snake.jointses.map(function(joints){
@@ -42,13 +26,10 @@ export default function snakeReducer(state = defaultState, action) {
             })
 
             var newState = action.data
-            // var newState = Object.assign({}, state, {snakes})
-            // console.log(newState)
-
             return newState
         default:
-            console.log('default snakes')
-            console.log(state)
+            // console.log('default snakes')
+            // console.log(state)
             return state    
     }
 

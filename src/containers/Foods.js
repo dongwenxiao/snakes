@@ -4,19 +4,16 @@ import React, {
 } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-
-import * as foodActionCreator from '../actions/food'
+import * as foodActionCreator from '../actions/foods'
 
 require('styles/food.css');
-
 
 class Foods extends Component { 
 
   render() {
 
     var foods = [];
-    
-    this.props.foodsData.foods.forEach(function(food, i){
+    this.props.foods.foods.forEach(function(food, i){
       var foodStyles = {
         left: food.left,
         top: food.top,
@@ -34,25 +31,13 @@ class Foods extends Component {
       </div>
     )
   }
-
-  componentDidMount(){
-  }
-
 }
-
-Foods.propTypes = {
-  actions: PropTypes.object.isRequired
-};
-
-// Foods.defaultProps = {
-// };
-
 
 function mapStateToProps(state) {  
   const props = {
-    foodsData: state.foods
-  };
-  return props;
+    foods: state.foods
+  }
+  return props
 }
 function mapDispatchToProps(dispatch) {  
   const actions = foodActionCreator;

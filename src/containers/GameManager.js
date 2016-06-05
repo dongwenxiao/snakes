@@ -5,31 +5,24 @@ import React, {
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import * as foodActionCreator from '../actions/food'
+import * as foodsActionCreator from '../actions/foods'
 import * as snakeActionCreator from '../actions/snake'
 import * as snakesActionCreator from '../actions/snakes'
 
 import gameClinetLogic from '../game/clinetLogic'
-import gameServerLogic from '../game/serverLogic'
+// import gameServerLogic from '../game/serverLogic'
 
 class GameManager extends Component { 
 
   constructor(props) {
     super(props);
 
-    // console.log(this.props)
     const { actions } = this.props
 
-    /*setTimeout(function(){
-      actions.move()
-    },2000)*/
-
-    /////////////////////////////////////////////////////////////////// 已从server获得snakes的状态，下面根据状态绘制
-
-
-    // this.bindKeyControl(actions);
 
     gameClinetLogic.init(actions)
+    
+    this.bindKeyControl(actions);
 
     // gameLogic.test()
   }
@@ -39,7 +32,7 @@ class GameManager extends Component {
       <div className="gameManager" />
     )
   }
-/*
+
   // 绑定键盘控制事件
   bindKeyControl(actions){
     window.addEventListener('keypress', function(e){
@@ -48,21 +41,18 @@ class GameManager extends Component {
       // left 97
       // right 100
       if(e.keyCode == 97){
-        actions.turnLeft();
+        gameClinetLogic.turnLeft();
       }
 
       if(e.keyCode == 100){
-        actions.turnRight();
+        gameClinetLogic.turnRight();
       }
 
       if(e.keyCode == 119){
-        actions.move();
+        gameClinetLogic.move();
       }
-    });
+    })
   }
-*/
-
-
 }
 
 
@@ -73,8 +63,8 @@ function mapStateToProps(state) {
   return props;
 }
 function mapDispatchToProps(dispatch) {  
-  const actions = snakesActionCreator;
-  const actionMap = { actions: bindActionCreators(actions, dispatch) };
+  const actions = Object.assign({}, foodsActionCreator, snakesActionCreator)
+  const actionMap = { actions: bindActionCreators(actions, dispatch) }
   return actionMap;
 }
 export default connect(mapStateToProps, mapDispatchToProps)(GameManager);
