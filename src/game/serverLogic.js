@@ -404,7 +404,17 @@ module.exports = function(io) {
         },
 
         checkKill(){
+            var snakes = getCacheData('snakes')
+            snakes.forEach(function(snake1){
+                const head = snake1.jointses[0]
+                snakes.forEach(function(snake2){
+                    ///////////////////////////////////////////////////////////////
+                    // 1 头与头
 
+
+                    // 2 头与身
+                })
+            })
         },
 
         sendToCurrent() {
