@@ -35,11 +35,15 @@ class GameManager extends Component {
 
   // 绑定键盘控制事件
   bindKeyControl(actions){
+
+    const MaxInOneSecond = 5 // 每秒不超过3次
+    var st = null
+    var canHanler = true
+    // window.addEventListener('keypress', function(e){
     window.addEventListener('keypress', function(e){
-      // up  119
-      // down 115
-      // left 97
-      // right 100
+
+
+
       if(e.keyCode == 97){
         gameClinetLogic.turnLeft();
       }
@@ -47,9 +51,25 @@ class GameManager extends Component {
       if(e.keyCode == 100){
         gameClinetLogic.turnRight();
       }
+      
+      if(canHanler){
+        
+        // up  119
+        // down 115
+        // left 97
+        // right 100
+        
 
-      if(e.keyCode == 119){
-        gameClinetLogic.move();
+        if(e.keyCode == 119){
+          gameClinetLogic.move();
+        }
+
+        // 连按控制
+        canHanler = false
+        st = setTimeout(function(){
+          canHanler = true
+          clearTimeout(st)
+        }, 1000 / MaxInOneSecond)
       }
     })
   }

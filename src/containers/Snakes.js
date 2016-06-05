@@ -12,7 +12,7 @@ class Snakes extends Component {
 
   render() {
     const allSnakeJiontses = []
-    const {snakes, actions} = this.props;
+    const {snakes, actions} = this.props
     // const snakes = snakesData
 
     // console.log(snakes)
@@ -44,12 +44,12 @@ function mapStateToProps(state) {
     snakes: state.snakes
   }
 
-  return props;
+  return props
 }
 function mapDispatchToProps(dispatch) {
 
   const actions = snakeActionCreator;
-  const actionMap = { actions: bindActionCreators(actions, dispatch) };
-  return actionMap;
+  const actionMap = { actions: bindActionCreators(actions, dispatch) }
+  return actionMap
 }
-export default connect(mapStateToProps, mapDispatchToProps)(Snakes);
+export default connect(mapStateToProps, mapDispatchToProps)(Snakes)
