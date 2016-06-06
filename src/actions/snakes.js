@@ -7,3 +7,9 @@ export function syncSnakes(snakes){
 		data: snakes
 	}
 }
+
+export function onSnakeDead(){
+	return {
+		type: types.SNAKE_DEAD
+	}
+}

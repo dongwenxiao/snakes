@@ -169,7 +169,7 @@ module.exports = function(io) {
         onMove(socket, cb){
             const me = this
             socket.on(actions.ACTION_MOVE, function(data) {
-                console.log(`${socket.id} ACTION_MOVE`)
+                // console.log(`${socket.id} ACTION_MOVE`)
 
                 // 控制当前操作的蛇move
                 var snakes = getCacheData('snakes').map(function(snake){
@@ -187,7 +187,7 @@ module.exports = function(io) {
         onTurnLeft(socket, cb){
             const me = this
             socket.on(actions.ACTION_TURN_LEFT, function(data) {
-                console.log(`${socket.id} ACTION_TURN_LEFT`)
+                // console.log(`${socket.id} ACTION_TURN_LEFT`)
 
                 // 控制当前操作的蛇 snakeTurnLeft
                 var snakes = getCacheData('snakes').map(function(snake){
@@ -205,7 +205,7 @@ module.exports = function(io) {
         onTurnRight(socket, cb){
             const me = this
             socket.on(actions.ACTION_TURN_RIGHT, function(data) {
-                console.log(`${socket.id} ACTION_TURN_RIGHT`)
+                // console.log(`${socket.id} ACTION_TURN_RIGHT`)
 
                 // 控制当前操作的蛇 snakeTurnRight
                 var snakes = getCacheData('snakes').map(function(snake){
@@ -327,6 +327,36 @@ module.exports = function(io) {
             return snake
         },
 
+        snakeDeadHandle(deadSankesMapping){
+            const me = this
+            var snakes = getCacheData('snakes')
+            var deadSankes = []
+            
+            deadSankesMapping.forEach(function(mapping){
+
+                // 暂存所有已死亡蛇
+                deadSankes.push(mapping.deadSnake)
+
+                // 给胜利者kill + 1
+                snakes.forEach(function(snake){
+                    if(mapping.killerSnake.id == snake.id){
+                        snake.kill += 1
+                    }
+                })
+                
+            })
+
+            // 移除已死亡的蛇
+            snakes = _.difference(snakes, deadSankes)
+            setCacheData('snakes', snakes)
+
+            // 通知已死亡的蛇们
+            deadSankes.forEach(function(snake){
+                me.sendToOne(snake.id, actions.MSG_DEAD, '')
+            })
+
+        },
+
         removeFoods(foods){
             const newFoods = _.difference(getCacheData('foods'), foods)
             setCacheData('foods', newFoods)
@@ -404,17 +434,66 @@ module.exports = function(io) {
         },
 
         checkKill(){
-            var snakes = getCacheData('snakes')
-            snakes.forEach(function(snake1){
-                const head = snake1.jointses[0]
-                snakes.forEach(function(snake2){
-                    ///////////////////////////////////////////////////////////////
+            const deadSankes = []
+
+            const snakes = getCacheData('snakes')
+            const count = snakes.length
+
+            if(count < 2) return
+
+            for(var i=0; i<count - 1; i++){
+                const snake1 = snakes[i]
+                const head1 = snake1.jointses[0]
+
+                for(var j=i+1; j<count; j++){
+                    const snake2 = snakes[j]
+                    const head2 = snake2.jointses[0]
+
                     // 1 头与头
+                    if(head1.left == head2.left && head1.top == head2.top){
+                        // 俩蛇都死了
+                        deadSankes.push({
+                            deadSnake: snake1,
+                            killerSnake: snake2
+                        })
+                        deadSankes.push({
+                            deadSnake: snake2,
+                            killerSnake: snake1
+                        })
+                        break
+                    }else{
+                        // 2 头与身
+                        // 蛇2身 与 蛇1头
+                        var jointsLength = snake2.jointses.length
+                        for(var x=0; x<jointsLength; x++){
+                            var joints = snake2.jointses[x]
+                            if(head1.left == joints.left && head1.top == joints.top){
+                                deadSankes.push({
+                                    deadSnake: snake1,
+                                    killerSnake: snake2
+                                })
+                                break
+                            }
+                        }
+                        // 蛇2头 与 蛇1身
+                        jointsLength = snake1.jointses.length
+                        for(var x=0; x<jointsLength; x++){
+                            var joints = snake1.jointses[x]
+                            if(head2.left == joints.left && head2.top == joints.top){
+                                 deadSankes.push({
+                                    deadSnake: snake2,
+                                    killerSnake: snake1
+                                })
+                                break
+                            }
+                        }
+                    }
+                }
+            }
 
+            this.snakeDeadHandle(deadSankes)
+            // console.log(deadSankes)
 
-                    // 2 头与身
-                })
-            })
         },
 
         sendToCurrent() {
@@ -422,14 +501,14 @@ module.exports = function(io) {
         },
 
         sendToAll(type = actions.MSG_ALL_STATUS, data = getCacheData('snakes')) {
-            console.log(`sendToAll type:${type} data:`)
-            console.log(data)
+            // console.log(`sendToAll type:${type} data:`)
+            // console.log(data)
             io.sockets.emit(type, data)
         },
 
         sendToOne(socketId, type, data) {
-            console.log(`sendToOne type:${type} data:`)
-            console.log(data)
+            // console.log(`sendToOne type:${type} data:`)
+            // console.log(data)
             io.sockets.sockets[socketId].emit(type, data)
         }
 

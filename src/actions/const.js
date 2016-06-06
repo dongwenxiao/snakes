@@ -16,6 +16,7 @@ export const REMOVE_FOOD = 'REMOVE_FOOD'
 
 // snakes
 export const SYNC_SNAKES = 'SYNC_SNAKES'
+export const SNAKE_DEAD = 'SNAKE_DEAD'
 
 // foods
 export const SYNC_FOODS = 'SYNC_FOODS'

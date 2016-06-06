@@ -8,6 +8,9 @@ var defaultState = []
 export default function snakeReducer(state = defaultState, action) {
     // console.log('action.type' + action.type)
     switch(action.type){
+        case types.SNAKE_DEAD:
+            alert('You dead!')
+            return state
         case types.SYNC_SNAKES:
 
             // var snakes = action.data.snakes;

@@ -1,5 +1,6 @@
 // socket url
-export const SOCKET_SERVER_URL = 'http://localhost:8080'
+// export const SOCKET_SERVER_URL = 'http://localhost:8080'
+export const SOCKET_SERVER_URL = 'http://10.60.113.182:8080'
 
 // socket msg type
 // ACTION 是客户端发起的

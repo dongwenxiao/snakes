@@ -31,6 +31,7 @@ const gameLogic = {
 	init(actions){		
 		this.syncSankesState(actions.syncSnakes)
 		this.syncFoodsState(actions.syncFoods)
+		this.onSnakeDead(actions.onSnakeDead)
 
 		var username = this.setUserName()
 
@@ -77,6 +78,12 @@ const gameLogic = {
 			// console.log(data)
 
 			syncFoodsAction(data)
+		})
+	},
+
+	onSnakeDead(onDead){
+		socket.on(actions.MSG_DEAD, function(data){
+			onDead(data)
 		})
 	}
 
