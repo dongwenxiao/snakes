@@ -40,9 +40,11 @@ const gameLogic = {
 
 	setUserName(){
 		// return 'victor'
-		// return prompt('填上你的昵称~')
-		
-		return _.sample(RANDOM_NAMES)
+		var username = prompt('填上你的昵称~')
+		if(!username)
+			return _.sample(RANDOM_NAMES)
+		else
+			return username
 	},
 
 	// 加入游戏

@@ -6,11 +6,13 @@
  *          This modifications only run once when the generator is invoked - if
  *          you edit them, they are not updated again.
  */
-import { combineReducers } from 'redux';
+import { combineReducers } from 'redux'
 
 import snake from './snake'
 import snakes from './snakes'
 import foods from './foods'
+// import rankingList from './rankingList'
 /* Populated by react-webpack-redux:reducer */
-const reducers = {snake, foods, snakes};
+const reducers = {snake, foods, snakes}
+// const reducers = {snake, foods, snakes, rankingList};
 module.exports = combineReducers(reducers);

@@ -346,14 +346,16 @@ module.exports = function(io) {
                 
             })
 
+            // 通知已死亡的蛇们
+            deadSankesMapping.forEach(function(mapping){
+                var snake = mapping.deadSnake
+                var killer = mapping.killerSnake
+                me.sendToOne(snake.id, actions.MSG_DEAD, { killer: killer.name })
+            })
+
             // 移除已死亡的蛇
             snakes = _.difference(snakes, deadSankes)
             setCacheData('snakes', snakes)
-
-            // 通知已死亡的蛇们
-            deadSankes.forEach(function(snake){
-                me.sendToOne(snake.id, actions.MSG_DEAD, '')
-            })
 
         },
 

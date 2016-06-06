@@ -8,8 +8,9 @@ export function syncSnakes(snakes){
 	}
 }
 
-export function onSnakeDead(){
+export function onSnakeDead(data){
 	return {
-		type: types.SNAKE_DEAD
+		type: types.SNAKE_DEAD,
+		data
 	}
 }

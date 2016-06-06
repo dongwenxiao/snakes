@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 
 import BgLayer from '../Components/BgLayer'
 import PlayLayer from '../Components/PlayLayer'
+import RankingList from './RankingList';
 
 import * as foodActionCreator from '../actions/food'
 import * as snakeActionCreator from '../actions/snake'
@@ -39,6 +40,7 @@ class Scene extends Component {
       <div className="scene" style={sceneStyles}>
   		  <BgLayer />
   		  <PlayLayer />
+        <RankingList />
       </div>
     );
   }

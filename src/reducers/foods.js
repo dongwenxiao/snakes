@@ -37,8 +37,8 @@ export default function foodsReducer(state = defaultState, action) {
     switch (action.type) {
         case types.SYNC_FOODS:
             var foods = action.data.foods;
-            console.log('SYNC_FOODS')
-            console.log(foods)
+            // console.log('SYNC_FOODS')
+            // console.log(foods)
             return { foods }
     	/*case types.ADD_FOOD:
     		var newState = Object.assign({}, state) // 新完整蛇数据    
