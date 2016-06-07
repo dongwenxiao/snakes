@@ -8,7 +8,7 @@ class Snake{
 
 
 class Snake {
-    constructor(id, name, speed = GAME_CONFIG.SNAKE_SPEED, kill = 0, eat = 0, left = 100, top = 100){
+    constructor(id, name, speed = GAME_CONFIG.SNAKE_SPEED, kill = 0, eat = 0, left = 100, top = 100, dead = 0){
         this.id = id
         this.name = name
         this.speed = speed
@@ -16,6 +16,7 @@ class Snake {
         this.eat = eat
         this.left = left
         this.top = top
+        this.dead = dead
 
         var jointses = []
         for(var i=0; i<GAME_CONFIG.DEFAULT_JOINTS_COUNT; i++){

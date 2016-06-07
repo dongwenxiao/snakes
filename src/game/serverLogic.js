@@ -112,6 +112,7 @@ module.exports = function(io) {
             this.onTurnRight(socket)
             this.onTurnTop(socket)
             this.onTurnBottom(socket)
+            // this.onSnakeJoin(socket)
 
             // init map data
 
@@ -123,9 +124,18 @@ module.exports = function(io) {
             const me = this
             socket.on(actions.ACTION_JOIN, function(data) {
 
+                var snake = _.find(getCacheData('snakes'), function(snake){
+                    return snake.id == socket.id
+                })
+                if(snake) return
+
                 // 新蛇实例
                 var newUsername = data.name
-                var newSnake = new Snake(
+                console.log(`${newUsername}(${socket.id}) join `)
+
+                me.snakeJoin(socket.id, newUsername)
+
+                /*var newSnake = new Snake(
                     socket.id,
                     newUsername,
                     GAME_CONFIG.SNAKE_SPEED,
@@ -135,12 +145,10 @@ module.exports = function(io) {
                     getRandom(GAME_CONFIG.MAP_HEIGHT, GAME_CONFIG.TILE_HEIGHT)
                 )
 
-                console.log(`${newUsername}(${socket.id}) join `)
-
                 // 插入蛇群
                 var snakes = getCacheData('snakes')
                 snakes.push(newSnake)
-                setCacheData('snakes', snakes)
+                setCacheData('snakes', snakes)*/
 
                 // 发送豆子状态
                 me.sendToOne(socket.id, actions.MSG_FOODS_STATUS, getCacheData('foods'))
@@ -234,6 +242,34 @@ module.exports = function(io) {
                 
                 me.gameDataCheck()
             })
+        },
+        /*onSnakeJoin(socket, cb){
+            const me = this
+            socket.on(actions.SNAKE_BIRTH, function(data){
+
+                me.snakeJoin(socket.id, data.username)
+
+                cb && cb()
+                
+                me.gameDataCheck()
+            })
+        },*/
+
+        snakeJoin(id, name){
+            var newSnake = new Snake(
+                id,
+                name,
+                GAME_CONFIG.SNAKE_SPEED,
+                0,
+                0,
+                getRandom(GAME_CONFIG.MAP_WIDTH, GAME_CONFIG.TILE_WIDTH),
+                getRandom(GAME_CONFIG.MAP_HEIGHT, GAME_CONFIG.TILE_HEIGHT)
+            )
+            
+            // 插入蛇群
+            var snakes = getCacheData('snakes')
+            snakes.push(newSnake)
+            setCacheData('snakes', snakes)
         },
 
         // return

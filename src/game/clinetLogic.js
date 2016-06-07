@@ -17,6 +17,8 @@ socket.on(actions.MSG_DEAD, function(data){
 	// 通知当前蛇死亡
 })
 */
+var gameUsername = ''
+
 const gameLogic = {
 
 	data: {
@@ -34,6 +36,7 @@ const gameLogic = {
 		this.onSnakeDead(actions.onSnakeDead)
 
 		var username = this.setUserName()
+		gameUsername = username
 
 		this.join(username)
 	},
@@ -67,6 +70,11 @@ const gameLogic = {
 	turnBottom(){
 		socket.send(actions.ACTION_TURN_BOTTOM)
 	},
+	rebirth(){
+		// socket.send(actions.SNAKE_BIRTH)
+		this.join(gameUsername)
+	},
+
 
 	// 全部snake的状态，用于绘制所有的蛇
 	syncSankesState(syncSnakesAction) {

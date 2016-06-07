@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import * as GAME_CONFIG from '../constants/game'
 import * as snakeActionCreator from '../actions/snake'
 
+import gameClinetLogic from '../game/clinetLogic'
 
 class RankingList extends Component {
 
@@ -20,6 +21,7 @@ class RankingList extends Component {
           <td>{snake.name}</td>
           <td>{snake.jointses.length}</td>
           <td>{snake.kill}</td>
+          <td>{snake.dead}</td>
         </tr>
       )
     })
@@ -37,13 +39,22 @@ class RankingList extends Component {
             <th>昵称</th>
             <th>长度</th>
             <th>杀敌</th>
+            <th>死亡</th>
           </tr>
           {trs}
         </table>
+        <div>
+          <button onClick={this.tryAgain.bind(this)}>再玩一次</button>
+        </div>
       </div>
     )
   }
+
+  tryAgain(){
+    gameClinetLogic.rebirth()
+  }
 }
+
 
 function mapStateToProps(state) {
   const props = {
