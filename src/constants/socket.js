@@ -14,6 +14,8 @@ export const ACTION_RESTART = 201
 export const ACTION_MOVE = 300
 export const ACTION_TURN_LEFT = 301
 export const ACTION_TURN_RIGHT = 302
+export const ACTION_TURN_TOP = 303
+export const ACTION_TURN_BOTTOM = 304
 
 export const MSG_BIRTH = 400
 export const MSG_DEAD = 401

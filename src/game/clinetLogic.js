@@ -61,6 +61,12 @@ const gameLogic = {
 	turnRight(){
 		socket.send(actions.ACTION_TURN_RIGHT)	
 	},
+	turnTop(){
+		socket.send(actions.ACTION_TURN_TOP)
+	},
+	turnBottom(){
+		socket.send(actions.ACTION_TURN_BOTTOM)
+	},
 
 	// 全部snake的状态，用于绘制所有的蛇
 	syncSankesState(syncSnakesAction) {

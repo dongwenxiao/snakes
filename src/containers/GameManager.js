@@ -42,7 +42,11 @@ class GameManager extends Component {
     // window.addEventListener('keypress', function(e){
     window.addEventListener('keypress', function(e){
 
-
+      // up  119
+      // down 115
+      // left 97
+      // right 100
+      // space 32
 
       if(e.keyCode == 97){
         gameClinetLogic.turnLeft();
@@ -51,16 +55,18 @@ class GameManager extends Component {
       if(e.keyCode == 100){
         gameClinetLogic.turnRight();
       }
-      
-      if(canHanler){
-        
-        // up  119
-        // down 115
-        // left 97
-        // right 100
-        
 
-        if(e.keyCode == 119){
+      if(e.keyCode == 119){
+        gameClinetLogic.turnTop();
+      }
+
+      if(e.keyCode == 115){
+        gameClinetLogic.turnBottom();
+      }
+      
+      if(canHanler){       
+
+        if(e.keyCode == 32){
           gameClinetLogic.move();
         }
 
@@ -71,6 +77,7 @@ class GameManager extends Component {
           clearTimeout(st)
         }, 1000 / MaxInOneSecond)
       }
+
     })
   }
 }

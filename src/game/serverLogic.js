@@ -110,6 +110,8 @@ module.exports = function(io) {
             this.onMove(socket)
             this.onTurnLeft(socket)
             this.onTurnRight(socket)
+            this.onTurnTop(socket)
+            this.onTurnBottom(socket)
 
             // init map data
 
@@ -169,112 +171,158 @@ module.exports = function(io) {
         onMove(socket, cb){
             const me = this
             socket.on(actions.ACTION_MOVE, function(data) {
-                // console.log(`${socket.id} ACTION_MOVE`)
 
-                // 控制当前操作的蛇move
-                var snakes = getCacheData('snakes').map(function(snake){
-                    if(snake.id == socket.id){
-                        return me.snakeMove(snake)
-                    }
-                    return snake
-                })
-                setCacheData('snakes', snakes)
+                // 先判断能否快速前进
+                if(me.snakeExpendJoints(socket.id)){
+                    // console.log(`${socket.id} ACTION_MOVE`)
 
-                me.gameDataCheck()
-                cb && cb()
+                    // 控制当前操作的蛇move
+                    var snakes = getCacheData('snakes').map(function(snake){
+                        if(snake.id == socket.id){
+                            return me.snakeMove(snake, 3)
+                        }
+                        return snake
+                    })
+                    setCacheData('snakes', snakes)
+
+                    me.gameDataCheck()
+                    cb && cb()
+                }                
             })
         },
         onTurnLeft(socket, cb){
             const me = this
             socket.on(actions.ACTION_TURN_LEFT, function(data) {
-                // console.log(`${socket.id} ACTION_TURN_LEFT`)
 
-                // 控制当前操作的蛇 snakeTurnLeft
-                var snakes = getCacheData('snakes').map(function(snake){
-                    if(snake.id == socket.id){
-                        return me.snakeTurnLeft(snake)
-                    }
-                    return snake
-                })
-                setCacheData('snakes', snakes)
+                me.snakeTurn(socket.id, DIRECTION.LEFT)
 
                 me.gameDataCheck()
+
                 cb && cb()
             })
         },
         onTurnRight(socket, cb){
             const me = this
             socket.on(actions.ACTION_TURN_RIGHT, function(data) {
-                // console.log(`${socket.id} ACTION_TURN_RIGHT`)
 
-                // 控制当前操作的蛇 snakeTurnRight
-                var snakes = getCacheData('snakes').map(function(snake){
-                    if(snake.id == socket.id){
-                        return me.snakeTurnRight(snake)
-                    }
-                    return snake
-                })
-                setCacheData('snakes', snakes)
+                me.snakeTurn(socket.id, DIRECTION.RIGHT)
 
                 cb && cb()
+
+                me.gameDataCheck()
+            })
+        },
+        onTurnTop(socket, cb){
+            const me = this
+            socket.on(actions.ACTION_TURN_TOP, function(data) {
+
+                me.snakeTurn(socket.id, DIRECTION.TOP)
+
+                cb && cb()
+                
                 me.gameDataCheck()
             })
         },
 
-        snakeMove(snake){
-            var lastJoints = null
-            snake.jointses = snake.jointses.map(function(joints) {
-                if (!lastJoints) {
-                    // 头                    
-                    lastJoints = Object.assign({}, joints)
+        onTurnBottom(socket, cb){
+            const me = this
+            socket.on(actions.ACTION_TURN_BOTTOM, function(data) {
 
-                    // var head = snake.jointses[0]
-                    var head = joints
+                me.snakeTurn(socket.id, DIRECTION.BOTTOM)
 
-                    // 向左移动
-                    if (head.direction == DIRECTION.LEFT) {
-                        head.left -= GAME_CONFIG.TILE_WIDTH
-                    }
-
-                    // 向右移动
-                    if (head.direction == DIRECTION.RIGHT) {
-                        head.left += GAME_CONFIG.TILE_WIDTH
-                    }
-
-                    // 向上移动
-                    if (head.direction == DIRECTION.TOP) {
-                        head.top -= GAME_CONFIG.TILE_HEIGHT
-                    }
-
-                    // 向下移动
-                    if (head.direction == DIRECTION.BOTTOM) {
-                        head.top += GAME_CONFIG.TILE_HEIGHT
-                    }
-
-                    // 保证永远不会移出地图            
-                    if (head.top < 0) {
-                        head.top += GAME_CONFIG.MAP_HEIGHT
-                    }
-                    if (head.top >= GAME_CONFIG.MAP_HEIGHT) {
-                        head.top -= GAME_CONFIG.MAP_HEIGHT
-                    }
-                    if (head.left < 0) {
-                        head.left += GAME_CONFIG.MAP_WIDTH
-                    }
-                    if (head.left >= GAME_CONFIG.MAP_WIDTH) {
-                        head.left -= GAME_CONFIG.MAP_WIDTH
-                    }
-
-                } else {
-                    // 其余节
-                    var tpmJoints = Object.assign({}, joints)
-                    joints.left = lastJoints.left
-                    joints.top = lastJoints.top
-                    joints.direction = lastJoints.direction
-                    lastJoints = tpmJoints
-                }
-                return joints
+                cb && cb()
+                
+                me.gameDataCheck()
             })
+        },
+
+        // return
+        // true: 自身减少一个关键，并加速
+        // false: 关键是小于3个，不能减少，不能加速
+        snakeExpendJoints(snakeId){
+            var canMoveFast = false
+            var snakes = getCacheData('snakes').map(function(snake){
+                if(snake.id == snakeId){
+                    var jointsCount = snake.jointses.length
+                    if(jointsCount > 3){
+                        canMoveFast = true
+                        snake.jointses = snake.jointses.splice(0, jointsCount - 1)
+                    }
+                    return snake
+                }
+                return snake
+            })
+            setCacheData('snakes', snakes)
+
+            return canMoveFast
+        },
+
+        snakeMove(snake, step = 1){
+            
+            for(var i=0; i<step; i++){
+
+                var lastJoints = null
+                snake.jointses = snake.jointses.map(function(joints) {
+                    if (!lastJoints) {
+                        // 头                    
+                        lastJoints = Object.assign({}, joints)
+
+                        // var head = snake.jointses[0]
+                        var head = joints
+
+                        // 向左移动
+                        if (head.direction == DIRECTION.LEFT) {
+                            head.left -= GAME_CONFIG.TILE_WIDTH
+                        }
+
+                        // 向右移动
+                        if (head.direction == DIRECTION.RIGHT) {
+                            head.left += GAME_CONFIG.TILE_WIDTH
+                        }
+
+                        // 向上移动
+                        if (head.direction == DIRECTION.TOP) {
+                            head.top -= GAME_CONFIG.TILE_HEIGHT
+                        }
+
+                        // 向下移动
+                        if (head.direction == DIRECTION.BOTTOM) {
+                            head.top += GAME_CONFIG.TILE_HEIGHT
+                        }
+
+                        // 保证永远不会移出地图            
+                        if (head.top < 0) {
+                            head.top += GAME_CONFIG.MAP_HEIGHT
+                        }
+                        if (head.top >= GAME_CONFIG.MAP_HEIGHT) {
+                            head.top -= GAME_CONFIG.MAP_HEIGHT
+                        }
+                        if (head.left < 0) {
+                            head.left += GAME_CONFIG.MAP_WIDTH
+                        }
+                        if (head.left >= GAME_CONFIG.MAP_WIDTH) {
+                            head.left -= GAME_CONFIG.MAP_WIDTH
+                        }
+
+                    } else {
+                        // 其余节
+                        var tpmJoints = Object.assign({}, joints)
+                        joints.left = lastJoints.left
+                        joints.top = lastJoints.top
+                        joints.direction = lastJoints.direction
+                        lastJoints = tpmJoints
+                    }
+
+                    return joints
+                })
+
+                /*console.log('step:'+step)
+                var tmp = []
+                snake.jointses.forEach(function(j){
+                    tmp.push(j.left)
+                })
+                console.log(tmp.join(','))*/
+            }
 
             return snake
         },
@@ -312,6 +360,17 @@ module.exports = function(io) {
             snake.jointses[0] = head
             
             return snake
+        },
+        snakeTurn(id, direction){
+            var snakes = getCacheData('snakes').map(function(snake){
+                if(snake.id == id){
+                    var head = snake.jointses[0]
+                        head.direction = direction
+                    return snake
+                }
+                return snake
+            })
+            setCacheData('snakes', snakes)
         },
 
         snakeEatFood(snake, food){
@@ -511,7 +570,7 @@ module.exports = function(io) {
         sendToOne(socketId, type, data) {
             // console.log(`sendToOne type:${type} data:`)
             // console.log(data)
-            io.sockets.sockets[socketId].emit(type, data)
+            io.sockets.sockets[socketId] && io.sockets.sockets[socketId].emit && io.sockets.sockets[socketId].emit(type, data)
         }
 
     }
