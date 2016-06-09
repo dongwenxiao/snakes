@@ -13,15 +13,18 @@ class RankingList extends Component {
 
   render() {
     const {snakes} = this.props
-
+    const deadTdStyles = {
+      backgroundColor: '#FFB5B5'
+    }
     var trs = []
     snakes.forEach(function(snake){
+      const tdStyle = snake.isDead ? deadTdStyles : {}
       trs.push(
-        <tr>
-          <td>{snake.name}</td>
-          <td>{snake.jointses.length}</td>
-          <td>{snake.kill}</td>
-          <td>{snake.dead}</td>
+        <tr key={'user-item-' + snake.id}>
+          <td style={tdStyle}>{snake.name}</td>
+          <td style={tdStyle}>{snake.jointses.length}</td>
+          <td style={tdStyle}>{snake.kill}</td>
+          <td style={tdStyle}>{snake.dead}</td>
         </tr>
       )
     })
@@ -35,13 +38,17 @@ class RankingList extends Component {
     return (
       <div className="rank-list" style={styles}>
         <table>
-          <tr>
-            <th>昵称</th>
-            <th>长度</th>
-            <th>杀敌</th>
-            <th>死亡</th>
-          </tr>
-          {trs}
+          <thead>
+            <tr>
+              <th>昵称</th>
+              <th>长度</th>
+              <th>杀敌</th>
+              <th>死亡</th>
+            </tr>  
+          </thead>
+          <tbody>
+            {trs}  
+          </tbody>          
         </table>
         <div>
           <button onClick={this.tryAgain.bind(this)}>再玩一次</button>
@@ -51,7 +58,7 @@ class RankingList extends Component {
   }
 
   tryAgain(){
-    gameClinetLogic.rebirth()
+    gameClinetLogic.birth()
   }
 }
 

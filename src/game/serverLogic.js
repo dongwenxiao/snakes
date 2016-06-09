@@ -112,7 +112,7 @@ module.exports = function(io) {
             this.onTurnRight(socket)
             this.onTurnTop(socket)
             this.onTurnBottom(socket)
-            // this.onSnakeJoin(socket)
+            this.onSnakeBirth(socket)
 
             // init map data
 
@@ -243,19 +243,33 @@ module.exports = function(io) {
                 me.gameDataCheck()
             })
         },
-        /*onSnakeJoin(socket, cb){
+        onSnakeBirth(socket, cb){
             const me = this
-            socket.on(actions.SNAKE_BIRTH, function(data){
+            socket.on(actions.MSG_BIRTH, function(data){
 
-                me.snakeJoin(socket.id, data.username)
+                me.snakeBirth(socket.id)
 
                 cb && cb()
                 
                 me.gameDataCheck()
             })
-        },*/
+        },
 
-        snakeJoin(id, name){
+        snakeBirth(id){
+            const snakes = getCacheData('snakes')
+            const snake = _.find(snakes, function(snake){
+                return snake.id == id
+            })
+            if(snake.isDead)
+                // 需要保持的数据
+                var lastData = {
+                    dead: snake.dead,
+                    kill: snake.kill
+                }
+                Object.assign(snake, this.snakeCreate(snake.id, snake.name), lastData)
+        },
+
+        snakeCreate(id, name){
             var newSnake = new Snake(
                 id,
                 name,
@@ -263,8 +277,17 @@ module.exports = function(io) {
                 0,
                 0,
                 getRandom(GAME_CONFIG.MAP_WIDTH, GAME_CONFIG.TILE_WIDTH),
-                getRandom(GAME_CONFIG.MAP_HEIGHT, GAME_CONFIG.TILE_HEIGHT)
+                getRandom(GAME_CONFIG.MAP_HEIGHT, GAME_CONFIG.TILE_HEIGHT),
+                0,
+                false
             )
+
+            return newSnake
+        },
+
+        snakeJoin(id, name){
+            
+            const newSnake = this.snakeCreate(id, name)
             
             // 插入蛇群
             var snakes = getCacheData('snakes')
@@ -423,7 +446,7 @@ module.exports = function(io) {
         },
 
         snakeDeadHandle(deadSankesMapping){
-            const me = this
+            /*const me = this
             var snakes = getCacheData('snakes')
             var deadSankes = []
             
@@ -450,7 +473,52 @@ module.exports = function(io) {
 
             // 移除已死亡的蛇
             snakes = _.difference(snakes, deadSankes)
-            setCacheData('snakes', snakes)
+            setCacheData('snakes', snakes)*/
+
+            const me = this
+            const snakes = getCacheData('snakes')
+            const snakeCount = snakes.length
+            const mappingCount = deadSankesMapping.length
+
+            // console.log(deadSankesMapping)
+
+            for (var j = 0; j < mappingCount; j++) {
+                const mapping = deadSankesMapping[j]
+                const deadSnake = mapping.deadSnake
+                const killerSnake = mapping.killerSnake
+                var isSetDeadSnake = false,
+                    isSetKillerSnake = false
+
+                for (var i = 0; i < snakeCount; i++) {
+                    const snake = snakes[i]
+
+                    // 设置死亡
+                    if (snake.id == deadSnake.id){
+                        snake.dead += 1
+                        snake.isDead = true
+                        isSetDeadSnake = true
+                        // console.log('dead snake:')
+                        // console.log(snake.name)
+                        continue
+                    }
+
+                    // 给胜利者kill + 1
+                    if (snake.id == killerSnake.id){
+                        snake.kill += 1
+                        isSetKillerSnake = true
+                        // console.log('killer snake:')
+                        // console.log(snake.name)
+                        continue
+                    }
+
+                    // 两个蛇都设置后可以跳出本次循环
+                    if(isSetDeadSnake && isSetKillerSnake)
+                        break
+                }
+
+                // 通知已死亡的蛇们
+                me.sendToOne(deadSnake.id, actions.MSG_DEAD, { killer: killerSnake.name })
+            }
 
         },
 
@@ -477,11 +545,12 @@ module.exports = function(io) {
         },
 
         autoLoopSnakeMove() {
-            var me = gameLogic
+            const me = gameLogic
 
             // all snake 每秒移动1次
-            var snakes = getCacheData('snakes').map(function(snake) {
-                return me.snakeMove(snake)
+            const snakes = getCacheData('snakes')
+            snakes.map(function(snake) {
+                return snake.isDead ? snake : me.snakeMove(snake)
             })
             setCacheData('snakes', snakes)
             
@@ -533,7 +602,7 @@ module.exports = function(io) {
         checkKill(){
             const deadSankes = []
 
-            const snakes = getCacheData('snakes')
+            const snakes = this.filterLiveSnakes(getCacheData('snakes'))
             const count = snakes.length
 
             if(count < 2) return
@@ -593,11 +662,24 @@ module.exports = function(io) {
 
         },
 
+        filterLiveSnakes(snakes){
+            if(!snakes)
+                snakes = getCacheData('snakes')
+            return _.filter(snakes, function(snake){
+                return snake.isDead == false
+            })
+        },
+
         sendToCurrent() {
 
         },
 
         sendToAll(type = actions.MSG_ALL_STATUS, data = getCacheData('snakes')) {
+
+            // 默认情况，过滤死亡的蛇
+            // if(type == actions.MSG_ALL_STATUS){
+            //     data = this.filterLiveSnakes(getCacheData('snakes'))
+            // }
             // console.log(`sendToAll type:${type} data:`)
             // console.log(data)
             io.sockets.emit(type, data)

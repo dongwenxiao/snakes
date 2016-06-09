@@ -8,7 +8,19 @@ class Snake{
 
 
 class Snake {
-    constructor(id, name, speed = GAME_CONFIG.SNAKE_SPEED, kill = 0, eat = 0, left = 100, top = 100, dead = 0){
+    /**
+     * [constructor description]
+     * @param  {[type]}  id     [description]
+     * @param  {[type]}  name   用户名
+     * @param  {[type]}  speed  移动速度
+     * @param  {Number}  kill   杀敌数
+     * @param  {Number}  eat    吃豆数
+     * @param  {Number}  left   坐标x
+     * @param  {Number}  top    坐标y
+     * @param  {Number}  dead   死亡数
+     * @param  {Boolean} isDead 是否已死
+     */
+    constructor(id, name, speed = GAME_CONFIG.SNAKE_SPEED, kill = 0, eat = 0, left = 100, top = 100, dead = 0, isDead = false){
         this.id = id
         this.name = name
         this.speed = speed
@@ -17,6 +29,7 @@ class Snake {
         this.left = left
         this.top = top
         this.dead = dead
+        this.isDead = isDead
 
         var jointses = []
         for(var i=0; i<GAME_CONFIG.DEFAULT_JOINTS_COUNT; i++){

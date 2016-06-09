@@ -3,8 +3,8 @@ export const BASE_UNIT = 12
 // size
 export const TILE_WIDTH = BASE_UNIT
 export const TILE_HEIGHT = BASE_UNIT
-export const TILE_COUNT_H = 100
-export const TILE_COUNT_V = 60
+export const TILE_COUNT_H = 40
+export const TILE_COUNT_V = 40
 export const MAP_WIDTH = TILE_WIDTH * TILE_COUNT_H
 export const MAP_HEIGHT = TILE_HEIGHT * TILE_COUNT_V
 

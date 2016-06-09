@@ -20,6 +20,7 @@ class Snakes extends Component {
 
     // 遍历蛇
     snakes.forEach(function(snake, snakeIndex){
+      if(snake.isDead) return
       // 遍历关节
       snake.jointses.forEach(function(joints, jointsIndex){
         const key = `joints-${snakeIndex}-${jointsIndex}`

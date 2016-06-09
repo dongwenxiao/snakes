@@ -70,9 +70,9 @@ const gameLogic = {
 	turnBottom(){
 		socket.send(actions.ACTION_TURN_BOTTOM)
 	},
-	rebirth(){
-		// socket.send(actions.SNAKE_BIRTH)
-		this.join(gameUsername)
+	birth(){
+		socket.send(actions.MSG_BIRTH)
+		// this.join(gameUsername)
 	},
 
 
