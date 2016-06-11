@@ -20,7 +20,7 @@ class Snake {
      * @param  {Number}  dead   死亡数
      * @param  {Boolean} isDead 是否已死
      */
-    constructor(id, name, speed = GAME_CONFIG.SNAKE_SPEED, kill = 0, eat = 0, left = 100, top = 100, dead = 0, isDead = false){
+    constructor(id, name, speed = GAME_CONFIG.SNAKE_SPEED, kill = 0, eat = 0, left = 100, top = 100, dead = 0, isDead = false, color = GAME_CONFIG.SNAKE_COLOR){
         this.id = id
         this.name = name
         this.speed = speed
@@ -30,12 +30,13 @@ class Snake {
         this.top = top
         this.dead = dead
         this.isDead = isDead
+        this.color = color
 
         var jointses = []
         for(var i=0; i<GAME_CONFIG.DEFAULT_JOINTS_COUNT; i++){
             var isHead = i == 0 ? true : false
             
-            var joints = new Joints(left, top, GAME_CONFIG.JOINTS_WIDTH, GAME_CONFIG.JOINTS_HEIGHT, DIRECTION.LEFT, GAME_CONFIG.SNAKE_COLOR, isHead)
+            var joints = new Joints(left, top, GAME_CONFIG.JOINTS_WIDTH, GAME_CONFIG.JOINTS_HEIGHT, DIRECTION.LEFT, color, isHead)
             jointses.push(joints)
         }
 

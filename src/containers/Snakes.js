@@ -12,11 +12,7 @@ class Snakes extends Component {
 
   render() {
     const allSnakeJiontses = []
-    // const {snakes, actions} = this.props
     const {snakes} = this.props
-    // const snakes = snakesData
-
-    // console.log(snakes)
 
     // 遍历蛇
     snakes.forEach(function(snake, snakeIndex){
@@ -25,13 +21,10 @@ class Snakes extends Component {
       snake.jointses.forEach(function(joints, jointsIndex){
         const key = `joints-${snakeIndex}-${jointsIndex}`
         allSnakeJiontses.push(
-          <Joints name={snake.name} key={key} data={joints} zIndex={snake.jointses.length - jointsIndex}/>
+          <Joints name={snake.name} key={key} data={joints} zIndex={snake.jointses.length - jointsIndex} color={snake.color}/>
         )
       })
     })
-
-    // console.log('render snake data')
-    // console.log(snakesData)
 
     return (
       <div>
@@ -48,11 +41,4 @@ function mapStateToProps(state) {
 
   return props
 }
-/*function mapDispatchToProps(dispatch) {
-
-  const actions = snakeActionCreator;
-  const actionMap = { actions: bindActionCreators(actions, dispatch) }
-  return actionMap
-}*/
-// export default connect(mapStateToProps, mapDispatchToProps)(Snakes)
 export default connect(mapStateToProps)(Snakes)

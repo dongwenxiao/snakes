@@ -279,7 +279,8 @@ module.exports = function(io) {
                 getRandom(GAME_CONFIG.MAP_WIDTH, GAME_CONFIG.TILE_WIDTH),
                 getRandom(GAME_CONFIG.MAP_HEIGHT, GAME_CONFIG.TILE_HEIGHT),
                 0,
-                false
+                false,
+                _.sample(GAME_CONFIG.SNAKE_COLORS)
             )
 
             return newSnake

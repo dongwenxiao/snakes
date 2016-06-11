@@ -3,43 +3,42 @@ import * as DIRECTION from '../constants/direction'
 import * as GAME_CONFIG from '../constants/game'
 import Joints from '../models/Joints'
 import * as _ from 'underscore'
+import ColorGrads from './__ColorGrads'
+
+
+function getColors(startColor, endColor, step){
+    return new ColorGrads({
+        StartColor: startColor,
+        EndColor: endColor,
+        Step: step
+    }).Create();
+}
 
 var defaultState = []
 
 export default function snakeReducer(state = defaultState, action) {
-    // console.log('action.type' + action.type)
+
     switch(action.type){
         case types.SNAKE_DEAD:
             alert('You dead! 被 ' + action.data.killer + ' 杀了~')
             return state
+
         case types.SYNC_SNAKES:
-
-            // var snakes = action.data.snakes;
             var snakes = action.data;
+            snakes = snakes.map(function(snake){
+                var colors = getColors(snake.color, '#000', snake.jointses.length)
+                snake.jointses.map(function(joints, index){
+                    const color = `RGB(${colors[index].join(',')})`.colorHex()
+                    joints.color = color
+                })
 
-            // snakes = _.filter(snakes, function(snake){
-            //     return snake.isDead == false
-            // })
+                return snake
+            })
+            return snakes
 
-            // console.log('SYNC_SNAKES')
-            // console.log(snakes)
-
-            // snakes = snakes.map(function(snake){
-            //     snake.jointses = snake.jointses.map(function(joints){
-            //         // 为了兼容旧数据格式
-            //         return new Joints(joints.left, joints.top, joints.width, joints.height, joints.direction, joints.color, joints.isHead)
-            //     })
-
-            //     return snake
-            // })
-
-            var newState = snakes
-            return newState
         default:
-            // console.log('default snakes')
-            // console.log(state)
             return state    
-    }
-
-    
+    }    
 }
+
+

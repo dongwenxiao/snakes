@@ -17,6 +17,7 @@ export const JOINTS_HEIGHT = BASE_UNIT
 export const SNAKE_SPEED = 4 // 2格/秒
 export const DEFAULT_JOINTS_COUNT = 3 // 默认3节关节
 export const SNAKE_COLOR = 'red' // 默认红色
+export const SNAKE_COLORS = ['red', 'blue', 'green', 'pink'] // 蛇颜色
 
 // foods
 export const MAX_FOOD_COUNT = 15 // 最多显示5个豆子

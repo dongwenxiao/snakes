@@ -3,7 +3,8 @@
     left: 0;
     top: 0;
     background: red;
-    /*border-left: 1px solid #000;*/
+    border-top: 1px solid #666;
+    border-right: 1px solid #666;
     box-sizing: border-box;
 
     /*transition: all .2s;*/
@@ -13,7 +14,7 @@
     position: absolute;
     white-space: nowrap;
     background: rgba(68, 68, 68, 0.22);
-    color: #000;
+    color: #fff;
     /* position: absolute;
     left: 0;
     top: -2px;
@@ -25,27 +26,27 @@
 
 
 .joints.left {
-    border-left: 2px solid #000;
+    /*border-left: 2px solid #000;
     border-top: 2px solid #000;
-    border-bottom: 2px solid #000;
+    border-bottom: 2px solid #000;*/
 }
 
 .joints.top {
-    border-left: 2px solid #000;
+    /*border-left: 2px solid #000;
     border-top: 2px solid #000;
-    border-right: 2px solid #000;
+    border-right: 2px solid #000;*/
 }
 
 .joints.right {
-    border-bottom: 2px solid #000;
+    /*border-bottom: 2px solid #000;
     border-top: 2px solid #000;
-    border-right: 2px solid #000;
+    border-right: 2px solid #000;*/
 }
 
 .joints.bottom {
-    border-left: 2px solid #000;
+    /*border-left: 2px solid #000;
     border-bottom: 2px solid #000;
-    border-right: 2px solid #000;
+    border-right: 2px solid #000;*/
 }
 
 .joints.red {
@@ -66,3 +67,46 @@
 
 
 /*.joints {}*/
+
+
+.joints.head{
+    -webkit-animation-duration: 1.5s;
+    -webkit-animation-iteration-count: infinite;
+    animation-timing-function:ease-in-out;
+}
+.joints.head.red{
+    -webkit-animation-name: red-light;
+}
+.joints.head.blue{
+    -webkit-animation-name: blue-light;
+}
+.joints.head.green{
+    -webkit-animation-name: green-light;
+}
+.joints.head.pink{
+    -webkit-animation-name: pink-light;
+}
+
+@-webkit-keyframes red-light {
+  from { background-color: red; -webkit-box-shadow: 0 0 9px #333; }
+  50% { background-color: red; -webkit-box-shadow: 0 0 18px #FFCACA; }
+  to { background-color: red; -webkit-box-shadow: 0 0 9px #333; }
+}
+
+@-webkit-keyframes blue-light {
+  from { background-color: blue; -webkit-box-shadow: 0 0 9px #333; }
+  50% { background-color: blue; -webkit-box-shadow: 0 0 18px #C5C5FF; }
+  to { background-color: blue; -webkit-box-shadow: 0 0 9px #333; }
+}
+
+@-webkit-keyframes green-light {
+  from { background-color: green; -webkit-box-shadow: 0 0 9px #333; }
+  50% { background-color: green; -webkit-box-shadow: 0 0 18px #43FF43; }
+  to { background-color: green; -webkit-box-shadow: 0 0 9px #333; }
+}
+
+@-webkit-keyframes pink-light {
+  from { background-color: pink; -webkit-box-shadow: 0 0 9px #333; }
+  50% { background-color: pink; -webkit-box-shadow: 0 0 18px #fff; }
+  to { background-color: pink; -webkit-box-shadow: 0 0 9px #333; }
+}
