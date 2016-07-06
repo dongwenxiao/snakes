@@ -1,5 +1,6 @@
 // socket url
-export const SOCKET_SERVER_URL = 'http://192.168.1.106:8080'
+// export const SOCKET_SERVER_URL = 'http://192.168.1.106:8080'
+export const SOCKET_SERVER_URL = 'http://10.60.237.95:8080'
 // export const SOCKET_SERVER_URL = 'http://localhost:8080'
 // export const SOCKET_SERVER_URL = 'http://10.60.113.182:8080'
 
